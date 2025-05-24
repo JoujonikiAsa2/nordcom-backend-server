@@ -18,7 +18,6 @@ model User {
   status               UserStatus      @default(ACTIVE)
   User_Extension       User_Extension?
   forgotPasswordToken  String?
-  forgotPasswordExpiry DateTime
   couponUsages         CouponUsage[]
   createdAt            DateTime        @default(now())
   updatedAt            DateTime        @updatedAt
@@ -83,7 +82,8 @@ model Brand {
   description String
   logoUrl     String?
   products    Product[]
-  isFeatured  Boolean
+  isFeatured  Boolean   @default (false)
+  isDeleted   Boolean   @default(false)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -113,11 +113,11 @@ model Product {
   stockStatus    Boolean
   brandId        String
   purchasedPrice Float
-  specification  String[]
+  specification  Json[]
   isFeatured     Boolean     @default(false)
   images         String[]
   categoryId     String
-  seoInformation String[]
+  seoInformation Json[]
   variants       String[]
   isDeleted      Boolean
   brand          Brand       @relation(fields: [brandId], references: [id])

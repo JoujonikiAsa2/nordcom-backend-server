@@ -1,0 +1,19 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.BrandRoutes = void 0;
+const express_1 = __importDefault(require("express"));
+const validateRequest_1 = __importDefault(require("../../middleware/validateRequest"));
+const AuthGurd_1 = __importDefault(require("../../middleware/AuthGurd"));
+const client_1 = require("@prisma/client");
+const brand_controller_1 = require("./brand.controller");
+const brand_zodvalidation_1 = require("./brand.zodvalidation");
+const router = express_1.default.Router();
+router.get("/", brand_controller_1.BrandControllers.GetBrands);
+router.post("/", (0, AuthGurd_1.default)(client_1.UserRole.ADMIN), (0, validateRequest_1.default)(brand_zodvalidation_1.BrandSchemas.createBrandSchema), brand_controller_1.BrandControllers.CreateBrand);
+router.patch("/update/:id", (0, AuthGurd_1.default)(client_1.UserRole.ADMIN), (0, validateRequest_1.default)(brand_zodvalidation_1.BrandSchemas.updateBrandSchema), brand_controller_1.BrandControllers.UpdateBrand);
+router.delete("/delete/:id", (0, AuthGurd_1.default)(client_1.UserRole.ADMIN), brand_controller_1.BrandControllers.DeleteBrand);
+router.get("/:id", brand_controller_1.BrandControllers.GetBrandById);
+exports.BrandRoutes = router;
