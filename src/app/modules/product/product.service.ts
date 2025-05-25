@@ -25,7 +25,7 @@ const GetProductByIdFromDB = async (id: string) => {
 const CreateProductIntoDB = async (
   payload: Product & { imageUrl?: string }
 ) => {
-  const { sku, specification, seoInformation,imageUrl, ...rest } = payload;
+  const { sku, specification, seoInformation, imageUrl, ...rest } = payload;
   const isProductExists = await prisma.product.findFirst({
     where: { sku },
   });
@@ -183,7 +183,7 @@ const DeleteProductFromDB = async (id: string) => {
 };
 
 const PopularProductFromDB = async () => {
-  const popularProducts = await prisma.orderItem.groupBy({
+  const productGroup = await prisma.orderItem.groupBy({
     by: ["productId"],
     _sum: {
       quantity: true,
@@ -195,12 +195,17 @@ const PopularProductFromDB = async () => {
     },
     take: 10, // Top 10 most popular products
   });
-    const totalSum = await prisma.payment.aggregate({
-    _sum: {
-      amount: true,
+
+  const popularProductId = productGroup.map((product) => product.productId);
+  const popularProducts = await prisma.product.findMany({
+    where: {
+      id: {
+        in: popularProductId,
+      },
     },
+    take: 10,
   });
-  return totalSum;
+  return popularProducts;
   // return popularProducts;
 };
 
@@ -210,5 +215,5 @@ export const ProductServices = {
   CreateProductIntoDB,
   UpdateProductIntoDB,
   DeleteProductFromDB,
-  PopularProductFromDB
+  PopularProductFromDB,
 };
