@@ -10,23 +10,21 @@ datasource db {
 }
 
 model User {
-  id                   String          @id @default(uuid())
-  name                 String
-  role                 UserRole        @default(CUSTOMER)
-  email                String          @unique
-  password             String
-  status               UserStatus      @default(ACTIVE)
-  User_Extension       User_Extension?
-  forgotPasswordToken  String?
-  forgotPasswordExpiry DateTime
-  couponUsages         CouponUsage[]
-  createdAt            DateTime        @default(now())
-  updatedAt            DateTime        @updatedAt
-  Order                Order[]
-  Cart                 Cart[]
-  Shipping             Shipping[]
-  Favorite             Favorite[]
-  Review               Review[]
+  id                  String          @id @default(uuid())
+  name                String
+  role                UserRole        @default(CUSTOMER)
+  email               String          @unique
+  password            String
+  status              UserStatus      @default(ACTIVE)
+  User_Extension      User_Extension?
+  forgotPasswordToken String?
+  couponUsages        CouponUsage[]
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  Order               Order[]
+  Cart                Cart[]
+  Favorite            Favorite[]
+  Review              Review[]
 
   @@map("user")
 }
@@ -113,11 +111,11 @@ model Product {
   stockStatus    Boolean
   brandId        String
   purchasedPrice Float
-  specification  String[]
+  specification  Json[]
   isFeatured     Boolean     @default(false)
   images         String[]
   categoryId     String
-  seoInformation String[]
+  seoInformation Json[]
   variants       String[]
   isDeleted      Boolean
   brand          Brand       @relation(fields: [brandId], references: [id])
@@ -125,7 +123,7 @@ model Product {
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
   OrderItem      OrderItem[]
-  CartItem       CartItem[]
+  // CartItem       CartItem[]
   Favorite       Favorite[]
   Review         Review[]
 
@@ -143,12 +141,12 @@ model Cart {
 }
 
 model CartItem {
-  id        String  @id @default(uuid())
+  id        String @id @default(uuid())
   cartId    String
   productId String
   quantity  Int
-  cart      Cart    @relation(fields: [cartId], references: [id])
-  product   Product @relation(fields: [productId], references: [id])
+  cart      Cart   @relation(fields: [cartId], references: [id])
+  // product   Product @relation(fields: [productId], references: [id])
 
   @@map("cart_items")
 }
@@ -164,7 +162,6 @@ model Order {
   updatedAt     DateTime    @updatedAt
   orderItems    OrderItem[]
   shippingId    String
-  shipping      Shipping    @relation(fields: [shippingId], references: [id])
   shippingFee   String
   paymentStatus Boolean
   Payment       Payment[]
@@ -182,17 +179,6 @@ model OrderItem {
   product   Product @relation(fields: [productId], references: [id])
 
   @@map("order_items")
-}
-
-model Shipping {
-  id      String  @id @default(uuid())
-  userId  String
-  orderId String
-  status  String
-  user    User    @relation(fields: [userId], references: [id])
-  Order   Order[]
-
-  @@map("shippings")
 }
 
 model Payment {
