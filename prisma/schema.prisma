@@ -18,13 +18,11 @@ model User {
   status               UserStatus      @default(ACTIVE)
   User_Extension       User_Extension?
   forgotPasswordToken  String?
-  forgotPasswordExpiry DateTime
   couponUsages         CouponUsage[]
   createdAt            DateTime        @default(now())
   updatedAt            DateTime        @updatedAt
   Order                Order[]
   Cart                 Cart[]
-  Shipping             Shipping[]
   Favorite             Favorite[]
   Review               Review[]
 
@@ -83,7 +81,8 @@ model Brand {
   description String
   logoUrl     String?
   products    Product[]
-  isFeatured  Boolean
+  isFeatured  Boolean   @default (false)
+  isDeleted   Boolean   @default(false)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -113,11 +112,11 @@ model Product {
   stockStatus    Boolean
   brandId        String
   purchasedPrice Float
-  specification  String[]
+  specification  Json[]
   isFeatured     Boolean     @default(false)
   images         String[]
   categoryId     String
-  seoInformation String[]
+  seoInformation Json[]
   variants       String[]
   isDeleted      Boolean
   brand          Brand       @relation(fields: [brandId], references: [id])
@@ -163,8 +162,6 @@ model Order {
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
   orderItems    OrderItem[]
-  shippingId    String
-  shipping      Shipping    @relation(fields: [shippingId], references: [id])
   shippingFee   String
   paymentStatus Boolean
   Payment       Payment[]
@@ -182,17 +179,6 @@ model OrderItem {
   product   Product @relation(fields: [productId], references: [id])
 
   @@map("order_items")
-}
-
-model Shipping {
-  id      String  @id @default(uuid())
-  userId  String
-  orderId String
-  status  String
-  user    User    @relation(fields: [userId], references: [id])
-  Order   Order[]
-
-  @@map("shippings")
 }
 
 model Payment {

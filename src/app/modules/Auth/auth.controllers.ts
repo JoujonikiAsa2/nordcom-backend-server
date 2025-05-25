@@ -3,7 +3,7 @@ import status from "http-status";
 import config from "../../../config";
 import sendResponse from "../../shared/sendResponse";
 import { AuthServices } from "./auth.services";
-import { generateToken } from "../../../Helpers/jwtHelpers";
+import { generateToken } from "../../../helpers/jwtHelpers";
 
 const login = catchAsync(async (req, res) => {
   const result = await AuthServices.login(req.body);

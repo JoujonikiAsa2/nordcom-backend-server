@@ -2,16 +2,20 @@ import config from "../config";
 
 export const paymentVerificationEmailText = ({
   name,
+  subject,
   transactionId,
-  amount,
-  reviewId,
-  completedAt,
+  totalAmount,
+  totalProducts,
+  orderId,
+  paidAt,
 }: {
   name: string;
+  subject: string;
   transactionId: string;
-  amount: number;
-  reviewId: string;
-  completedAt: string;
+  totalAmount: number;
+  totalProducts: number;
+  orderId: string;
+  paidAt: string;
 }) => {
   return `
   <!DOCTYPE html>
@@ -19,13 +23,14 @@ export const paymentVerificationEmailText = ({
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Confirmation</title> 
+    <title>${subject}</title> 
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
+            border: 1px solid green
         }
         .container {
             max-width: 600px;
@@ -95,15 +100,16 @@ export const paymentVerificationEmailText = ({
             <p>We are delighted to inform you that your payment has been successfully processed.</p>
             <div class="details">
                 <p><strong>Transaction ID:</strong> ${transactionId}</p>
-                <p><strong>Amount Paid:</strong> &#x09F3;${amount}</p>
-                <p><strong>Date:</strong> ${new Date(completedAt)}</p>
-                <p><strong>Review Name:</strong> ${reviewId}</p>
+                <p><strong>totalAmount Paid:</strong> &#x09F3;${totalAmount}</p>
+                <p><strong>totalAmount Paid:</strong> &#x09F3;${totalProducts}</p>
+                <p><strong>Date:</strong> ${new Date(paidAt)}</p>
+                <p><strong>Review Name:</strong> ${orderId}</p>
             </div>
             <p>Thank you for your payment. We are excited to have you in our portal!</p>
         </div>
         <div class="footer">
             If you have any questions, feel free to <a href="mail to: support@pulsedu.com">contact us</a>. <br>
-            &copy; 2025 Product Review. All Rights Reserved.
+            &copy; 2025 NordCom. All Rights Reserved.
         </div>
     </div>
 
@@ -148,7 +154,7 @@ export const forgotPasswordEmailText = ({
         </p>
         <hr style="margin-top: 40px; border: none; border-top: 1px solid #ddd;" />
         <p style="font-size: 12px; color: #aaa; text-align: center;">
-          &copy; ${new Date().getFullYear()} Your Company Name. All rights reserved.
+          &copy; ${new Date().getFullYear()} NordCom. All rights reserved.
         </p>
       </div>
     </div>

@@ -3,7 +3,7 @@ import ApiError from "../errors/ApiError";
 import config from "../../config";
 import { Secret } from "jsonwebtoken";
 import status from "http-status";
-import { jwtHelpers } from "../../Helpers/jwtHelpers";
+import { jwtHelpers } from "../../helpers/jwtHelpers";
 
 const AuthGurd = (...roles: string[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {

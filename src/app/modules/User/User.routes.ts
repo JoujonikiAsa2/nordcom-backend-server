@@ -1,11 +1,11 @@
 import { UserRole } from "@prisma/client";
 import express from "express";
-import AuthGurd from "../../middleware/AuthGurd";
+import AuthGurd from "../../middleware/authGurd";
 import { UploadImageInServer } from "../../middleware/UploadImage";
 import validateRequest from "../../middleware/validateRequest";
-import { UserControllers } from "./User.controllers";
-import { UserSchemas } from "./User.ZodValidations";
-import { UploadToCloudinary } from "../../../Helpers/CloudinaryUpload";
+import { UserControllers } from "./user.controllers";
+import { UserSchemas } from "./user.zodvalidations";
+import { UploadToCloudinary } from "../../../helpers/cloudinaryUpload";
 
 const router = express.Router();
 
