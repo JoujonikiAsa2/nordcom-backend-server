@@ -6,8 +6,9 @@ const SpecificationItemSchema = z.object({
 });
 
 const SEOInfoItemSchema = z.object({
-  label: z.string({ required_error: "SEO label is required" }),
-  value: z.string({ required_error: "SEO value is required" }),
+  title: z.string({ required_error: "SEO label is required" }),
+  keyword: z.string({ required_error: "SEO value is required" }),
+  description: z.string({ required_error: "SEO value is required" }),
 });
 
 export const createProductSchema = z.object({

@@ -28,7 +28,7 @@ const CreateProduct = catchAsync(async (req, res) => {
   const data = req.body;
   const result = await ProductServices.CreateProductIntoDB(data);
   sendResponse(res, {
-    statusCode: status.OK,
+    statusCode: status.CREATED,
     success: true,
     message: "Product Created Successfully.",
     data: result,
@@ -58,10 +58,22 @@ const DeleteProduct = catchAsync(async (req, res) => {
   });
 });
 
+const PopularProduct = catchAsync(async (req, res) => {
+  const result = await ProductServices.PopularProductFromDB();
+  sendResponse(res, {
+    statusCode: status.OK,
+    success: true,
+    message: "Popular Products Fetched Successfully.",
+    data: result,
+  });
+});
+
+
 export const ProductControllers = {
   GetProducts,
   GetProductById,
   CreateProduct,
   UpdateProduct,
-  DeleteProduct
+  DeleteProduct,
+  PopularProduct
 };

@@ -3,7 +3,7 @@ import status from "http-status";
 import { JwtPayload } from "jsonwebtoken";
 import ApiError from "../../errors/ApiError";
 import prisma from "../../shared/prisma";
-import { TUpdateUser, TUser } from "./User.ZodValidations";
+import { TUpdateUser, TUser } from "./user.zodvalidations";
 import { UserStatus } from "@prisma/client";
 
 const registerUserIntoDB = async (payload: TUser) => {

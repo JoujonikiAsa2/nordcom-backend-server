@@ -1,11 +1,11 @@
 import express from "express";
 import validateRequest from "../../middleware/validateRequest";
-import AuthGurd from "../../middleware/AuthGurd";
+import AuthGurd from "../../middleware/authGurd";
 import { UserRole } from "@prisma/client";
 import { ProductSchemas } from "./product.zodvalidation";
 import { ProductControllers } from "./product.controller";
 import { UploadImageInServer } from "../../middleware/UploadImage";
-import { UploadToCloudinary } from "../../../Helpers/CloudinaryUpload";
+import { UploadToCloudinary } from "../../../helpers/cloudinaryUpload";
 
 const router = express.Router();
 
@@ -19,6 +19,7 @@ router.post(
   validateRequest(ProductSchemas.createProductSchema),
   ProductControllers.CreateProduct
 );
+
 router.patch(
   "/update/:id",
   AuthGurd(UserRole.ADMIN),
@@ -27,7 +28,15 @@ router.patch(
   validateRequest(ProductSchemas.updateProductSchema),
   ProductControllers.UpdateProduct
 );
+
 router.delete("/delete/:id", ProductControllers.DeleteProduct);
+
 router.get("/:id", ProductControllers.GetProductById);
+
+router.get(
+  "/popular-product/count",
+  // AuthGurd(UserRole.ADMIN),
+  ProductControllers.PopularProduct
+);
 
 export const ProductRoutes = router;

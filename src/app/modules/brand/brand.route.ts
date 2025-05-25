@@ -1,6 +1,6 @@
 import express from "express";
 import validateRequest from "../../middleware/validateRequest";
-import AuthGurd from "../../middleware/AuthGurd";
+import AuthGurd from "../../middleware/authGurd";
 import { UserRole } from "@prisma/client";
 import { BrandControllers } from "./brand.controller";
 import { BrandSchemas } from "./brand.zodvalidation";

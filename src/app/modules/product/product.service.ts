@@ -182,10 +182,33 @@ const DeleteProductFromDB = async (id: string) => {
   return null;
 };
 
+const PopularProductFromDB = async () => {
+  const popularProducts = await prisma.orderItem.groupBy({
+    by: ["productId"],
+    _sum: {
+      quantity: true,
+    },
+    orderBy: {
+      _sum: {
+        quantity: "desc",
+      },
+    },
+    take: 10, // Top 10 most popular products
+  });
+    const totalSum = await prisma.payment.aggregate({
+    _sum: {
+      amount: true,
+    },
+  });
+  return totalSum;
+  // return popularProducts;
+};
+
 export const ProductServices = {
   GetProductsFromDB,
   GetProductByIdFromDB,
   CreateProductIntoDB,
   UpdateProductIntoDB,
   DeleteProductFromDB,
+  PopularProductFromDB
 };

@@ -1,9 +1,6 @@
 import nodemailer from "nodemailer";
 import config from "../config";
-import {
-  forgotPasswordEmailText,
-  paymentVerificationEmailText,
-} from "./sendMailText";
+import { forgotPasswordEmailText, paymentVerificationEmailText } from "./sendMailText";
 
 const sendMail = async (payload: any, emailType: string): Promise<boolean> => {
   console.log({
@@ -32,6 +29,7 @@ const sendMail = async (payload: any, emailType: string): Promise<boolean> => {
 
   try {
     let info = await transporter.sendMail(mailOptions);
+    console.log(info)
     return true;
   } catch (error) {
     console.log("Error:", error);

@@ -28,7 +28,7 @@ const CreateBrand = catchAsync(async (req, res) => {
   const data = req.body;
   const result = await BrandServices.CreateBrandIntoDB(data);
   sendResponse(res, {
-    statusCode: status.OK,
+    statusCode: status.CREATED,
     success: true,
     message: "Brand Created Successfully.",
     data: result,

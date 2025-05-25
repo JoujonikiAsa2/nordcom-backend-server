@@ -1,6 +1,6 @@
 import express from "express";
 import validateRequest from "../../middleware/validateRequest";
-import AuthGurd from "../../middleware/AuthGurd";
+import AuthGurd from "../../middleware/authGurd";
 import { UserRole } from "@prisma/client";
 import { CategoryControllers } from "./category.controller";
 import { CategorySchemas } from "./category.zodvalidation";
