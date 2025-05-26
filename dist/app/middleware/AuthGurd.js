@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ApiError_1 = __importDefault(require("../errors/ApiError"));
 const config_1 = __importDefault(require("../../config"));
 const http_status_1 = __importDefault(require("http-status"));
-const jwtHelpers_1 = require("../../Helpers/jwtHelpers");
+const jwtHelpers_1 = require("../../helpers/jwtHelpers");
 const AuthGurd = (...roles) => {
     return (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         try {

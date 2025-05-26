@@ -40,7 +40,7 @@ const CreateProduct = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
     const data = req.body;
     const result = yield product_service_1.ProductServices.CreateProductIntoDB(data);
     (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
+        statusCode: http_status_1.default.CREATED,
         success: true,
         message: "Product Created Successfully.",
         data: result,
@@ -67,10 +67,20 @@ const DeleteProduct = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
         data: result,
     });
 }));
+const PopularProduct = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield product_service_1.ProductServices.PopularProductFromDB();
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Popular Products Fetched Successfully.",
+        data: result,
+    });
+}));
 exports.ProductControllers = {
     GetProducts,
     GetProductById,
     CreateProduct,
     UpdateProduct,
-    DeleteProduct
+    DeleteProduct,
+    PopularProduct
 };

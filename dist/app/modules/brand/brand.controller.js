@@ -40,7 +40,7 @@ const CreateBrand = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
     const data = req.body;
     const result = yield brand_service_1.BrandServices.CreateBrandIntoDB(data);
     (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
+        statusCode: http_status_1.default.CREATED,
         success: true,
         message: "Brand Created Successfully.",
         data: result,

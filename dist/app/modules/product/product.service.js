@@ -157,10 +157,36 @@ const DeleteProductFromDB = (id) => __awaiter(void 0, void 0, void 0, function* 
     });
     return null;
 });
+const PopularProductFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
+    const productGroup = yield prisma_1.default.orderItem.groupBy({
+        by: ["productId"],
+        _sum: {
+            quantity: true,
+        },
+        orderBy: {
+            _sum: {
+                quantity: "desc",
+            },
+        },
+        take: 10, // Top 10 most popular products
+    });
+    const popularProductId = productGroup.map((product) => product.productId);
+    const popularProducts = yield prisma_1.default.product.findMany({
+        where: {
+            id: {
+                in: popularProductId,
+            },
+        },
+        take: 10,
+    });
+    return popularProducts;
+    // return popularProducts;
+});
 exports.ProductServices = {
     GetProductsFromDB,
     GetProductByIdFromDB,
     CreateProductIntoDB,
     UpdateProductIntoDB,
     DeleteProductFromDB,
+    PopularProductFromDB,
 };

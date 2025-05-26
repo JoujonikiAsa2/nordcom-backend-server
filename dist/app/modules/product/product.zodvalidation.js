@@ -7,8 +7,9 @@ const SpecificationItemSchema = zod_1.z.object({
     value: zod_1.z.string({ required_error: "Specification value is required" }),
 });
 const SEOInfoItemSchema = zod_1.z.object({
-    label: zod_1.z.string({ required_error: "SEO label is required" }),
-    value: zod_1.z.string({ required_error: "SEO value is required" }),
+    title: zod_1.z.string({ required_error: "SEO label is required" }),
+    keyword: zod_1.z.string({ required_error: "SEO value is required" }),
+    description: zod_1.z.string({ required_error: "SEO value is required" }),
 });
 exports.createProductSchema = zod_1.z.object({
     name: zod_1.z.string({ required_error: "Name is required" }),

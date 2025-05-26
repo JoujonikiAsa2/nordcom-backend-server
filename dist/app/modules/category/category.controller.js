@@ -40,7 +40,7 @@ const CreateCategory = (0, catchAsync_1.default)((req, res) => __awaiter(void 0,
     const data = req.body;
     const result = yield category_service_1.CategoryServices.CreateCategoryIntoDB(data);
     (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
+        statusCode: http_status_1.default.CREATED,
         success: true,
         message: "Category Created Successfully.",
         data: result,
