@@ -17,8 +17,11 @@ const prisma_1 = __importDefault(require("../../shared/prisma"));
 const ApiError_1 = __importDefault(require("../../errors/ApiError"));
 const http_status_1 = __importDefault(require("http-status"));
 const GetCategorysFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
-    const Category = yield prisma_1.default.category.findMany({});
-    return Category;
+    const category = yield prisma_1.default.category.findMany({});
+    if (category.length === 0) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No Category Available");
+    }
+    return category;
 });
 const GetCategoryByIdFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const uniqueCategory = yield prisma_1.default.category.findUnique({
@@ -26,6 +29,9 @@ const GetCategoryByIdFromDB = (id) => __awaiter(void 0, void 0, void 0, function
             id,
         },
     });
+    if (uniqueCategory === null) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No Category Available");
+    }
     return uniqueCategory;
 });
 const CreateCategoryIntoDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
@@ -47,8 +53,8 @@ const UpdateCategoryIntoDB = (id, payload) => __awaiter(void 0, void 0, void 0, 
             id,
         },
     });
-    if (isCategoryExists == null) {
-        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Category does not exists!");
+    if (isCategoryExists === null) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No Category Available");
     }
     const result = yield prisma_1.default.category.update({
         where: { id },
@@ -62,8 +68,8 @@ const DeleteCategoryFromDB = (id) => __awaiter(void 0, void 0, void 0, function*
             id,
         },
     });
-    if (isCategoryExists == null) {
-        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Category does not exists!");
+    if (isCategoryExists === null) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No Category Available");
     }
     yield prisma_1.default.category.delete({
         where: { id },

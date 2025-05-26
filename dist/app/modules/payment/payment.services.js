@@ -58,25 +58,33 @@ const CreatePaymentInDB = (payload) => __awaiter(void 0, void 0, void 0, functio
     if (!orderInfo) {
         throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "Order does not exist");
     }
-    const orderedItems = orderInfo === null || orderInfo === void 0 ? void 0 : orderInfo.orderItems.map((item) => item.productId);
-    orderedItems === null || orderedItems === void 0 ? void 0 : orderedItems.forEach((item) => __awaiter(void 0, void 0, void 0, function* () {
+    const orderedItems = orderInfo === null || orderInfo === void 0 ? void 0 : orderInfo.orderItems.map((item) => item);
+    for (const item of orderedItems) {
         const product = yield prisma_1.default.product.findUnique({
             where: {
-                id: item,
+                id: item.productId,
             },
         });
         if (product === null) {
-            throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "User Not Found");
+            throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "Product Not Available");
         }
-        console.log("I got it");
-    }));
+    }
     // transaction id generate
     const trans_Id = (0, payment_util_1.generateTransactionId)();
+    const isPaid = yield prisma_1.default.payment.findFirst({
+        where: {
+            orderId: orderInfo.id,
+            status: client_1.PaymentStatus.PAID,
+        },
+    });
+    if (isPaid !== null) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Already Paid");
+    }
     const result = yield prisma_1.default.$transaction((tr_client) => __awaiter(void 0, void 0, void 0, function* () {
         var _a;
-        const paymentInfo = yield prisma_1.default.payment.create({
+        const paymentInfo = yield tr_client.payment.create({
             data: {
-                amount: orderInfo.totalAmount || 0,
+                amount: orderInfo.totalAmount + Number(orderInfo.shippingFee) || 0,
                 paidAt: new Date(),
                 orderId: orderInfo.id,
                 transactionId: payload.transactionId || trans_Id,
@@ -84,6 +92,21 @@ const CreatePaymentInDB = (payload) => __awaiter(void 0, void 0, void 0, functio
                 method: (_a = payload.method) !== null && _a !== void 0 ? _a : "card",
             },
         });
+        const payment = null;
+        if (!payment) {
+            yield prisma_1.default.order.delete({
+                where: {
+                    id: orderInfo.id,
+                }
+            });
+            for (const item of orderedItems) {
+                yield prisma_1.default.product.update({
+                    where: { id: item.productId },
+                    data: { stock: item.product.stock + item.quantity },
+                });
+            }
+            throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Payment Failed");
+        }
         const emailInfo = {
             name: userInfo.name,
             email: userInfo.email,
@@ -95,23 +118,27 @@ const CreatePaymentInDB = (payload) => __awaiter(void 0, void 0, void 0, functio
             paidAt: paymentInfo.paidAt,
         };
         (0, sendEmail_1.default)(emailInfo, "payment");
-        yield prisma_1.default.order.update({
+        yield tr_client.order.update({
             where: {
                 id: orderInfo.id,
             },
             data: {
-                paymentStatus: true,
+                paymentStatus: client_1.PaymentStatus.PAID,
             },
         });
+        return paymentInfo;
     }));
     return result;
 });
-const GetPaymentsByTransId = (transId) => __awaiter(void 0, void 0, void 0, function* () {
+const GetPaymentByTransId = (transId) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.payment.findFirst({
         where: {
             transactionId: transId,
         },
     });
+    if (result === null) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No Payment Available");
+    }
     return result;
 });
 const GetPaymentsByUserEmail = (email, orderId) => __awaiter(void 0, void 0, void 0, function* () {
@@ -121,7 +148,7 @@ const GetPaymentsByUserEmail = (email, orderId) => __awaiter(void 0, void 0, voi
         },
     });
     if (!userInfo) {
-        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "User does not exist");
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No User Available");
     }
     const result = yield prisma_1.default.payment.findMany({
         where: {
@@ -132,7 +159,9 @@ const GetPaymentsByUserEmail = (email, orderId) => __awaiter(void 0, void 0, voi
             },
         },
     });
-    console.log();
+    if (result.length === 0) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No Payment Available");
+    }
     return result;
 });
 const GetPaymentById = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -141,16 +170,22 @@ const GetPaymentById = (id) => __awaiter(void 0, void 0, void 0, function* () {
             id: id,
         },
     });
+    if (result === null) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No Payment Available");
+    }
     return result;
 });
 const GetAllPaymentsFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.payment.findMany({});
+    if (result.length === 0) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No Payments Available");
+    }
     return result;
 });
 exports.PaymentServices = {
     CreateChechoutSession,
     CreatePaymentInDB,
-    GetPaymentsByTransId,
+    GetPaymentByTransId,
     GetPaymentsByUserEmail,
     GetPaymentById,
     GetAllPaymentsFromDB,

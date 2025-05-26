@@ -4,12 +4,15 @@ import status from "http-status";
 import { Prisma, Product } from "@prisma/client";
 
 const GetProductsFromDB = async () => {
-  const Product = await prisma.product.findMany({
+  const product = await prisma.product.findMany({
     where: {
       isDeleted: false,
     },
   });
-  return Product;
+  if (product.length === 0) {
+    throw new ApiError(status.NOT_FOUND, "No Product Found");
+  }
+  return product;
 };
 
 const GetProductByIdFromDB = async (id: string) => {
@@ -19,6 +22,9 @@ const GetProductByIdFromDB = async (id: string) => {
       isDeleted: false,
     },
   });
+  if (uniqueProduct === null) {
+    throw new ApiError(status.NOT_FOUND, "No Product Found");
+  }
   return uniqueProduct;
 };
 
@@ -53,8 +59,8 @@ const UpdateProductIntoDB = async (id: string, payload: Partial<Product>) => {
       id,
     },
   });
-  if (isProductExists == null) {
-    throw new ApiError(status.BAD_REQUEST, "Product does not exists!");
+  if (isProductExists === null) {
+    throw new ApiError(status.NOT_FOUND, "No Product Available");
   }
 
   //checking other field exist or not
@@ -172,8 +178,8 @@ const DeleteProductFromDB = async (id: string) => {
       id,
     },
   });
-  if (isProductExists == null) {
-    throw new ApiError(status.BAD_REQUEST, "Product does not exists!");
+  if (isProductExists === null) {
+    throw new ApiError(status.NOT_FOUND, "No Product Available");
   }
   await prisma.product.update({
     where: { id },
@@ -197,6 +203,7 @@ const PopularProductFromDB = async () => {
   });
 
   const popularProductId = productGroup.map((product) => product.productId);
+
   const popularProducts = await prisma.product.findMany({
     where: {
       id: {
@@ -205,8 +212,11 @@ const PopularProductFromDB = async () => {
     },
     take: 10,
   });
+
+  if (popularProducts.length === 0) {
+    throw new ApiError(status.OK, "No Popular Product Found");
+  }
   return popularProducts;
-  // return popularProducts;
 };
 
 export const ProductServices = {

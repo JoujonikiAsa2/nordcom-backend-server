@@ -40,7 +40,7 @@ app.use(express.urlencoded({ extended: true }));
 // Test route
 app.get("/", (req: Request, res: Response) => {
   res.send({
-    Message: "Backend is running successfully 🏃🏻‍♂️‍➡️",
+    Message: "Backend is running successfully smoothly 🏃🏻‍♂️‍➡️",
   });
 });
 

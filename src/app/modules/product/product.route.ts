@@ -34,7 +34,7 @@ router.delete("/delete/:id", ProductControllers.DeleteProduct);
 router.get("/:id", ProductControllers.GetProductById);
 
 router.get(
-  "/popular-product/count",
+  "/view/popular-product",
   // AuthGurd(UserRole.ADMIN),
   ProductControllers.PopularProduct
 );

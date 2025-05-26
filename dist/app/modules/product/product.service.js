@@ -28,12 +28,15 @@ const prisma_1 = __importDefault(require("../../shared/prisma"));
 const ApiError_1 = __importDefault(require("../../errors/ApiError"));
 const http_status_1 = __importDefault(require("http-status"));
 const GetProductsFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
-    const Product = yield prisma_1.default.product.findMany({
+    const product = yield prisma_1.default.product.findMany({
         where: {
             isDeleted: false,
         },
     });
-    return Product;
+    if (product.length === 0) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No Product Found");
+    }
+    return product;
 });
 const GetProductByIdFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const uniqueProduct = yield prisma_1.default.product.findUnique({
@@ -42,6 +45,9 @@ const GetProductByIdFromDB = (id) => __awaiter(void 0, void 0, void 0, function*
             isDeleted: false,
         },
     });
+    if (uniqueProduct === null) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No Product Found");
+    }
     return uniqueProduct;
 });
 const CreateProductIntoDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
@@ -65,8 +71,8 @@ const UpdateProductIntoDB = (id, payload) => __awaiter(void 0, void 0, void 0, f
             id,
         },
     });
-    if (isProductExists == null) {
-        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Product does not exists!");
+    if (isProductExists === null) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No Product Available");
     }
     //checking other field exist or not
     if (specification === null ||
@@ -148,8 +154,8 @@ const DeleteProductFromDB = (id) => __awaiter(void 0, void 0, void 0, function* 
             id,
         },
     });
-    if (isProductExists == null) {
-        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Product does not exists!");
+    if (isProductExists === null) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No Product Available");
     }
     yield prisma_1.default.product.update({
         where: { id },
@@ -179,8 +185,10 @@ const PopularProductFromDB = () => __awaiter(void 0, void 0, void 0, function* (
         },
         take: 10,
     });
+    if (popularProducts.length === 0) {
+        throw new ApiError_1.default(http_status_1.default.OK, "No Popular Product Found");
+    }
     return popularProducts;
-    // return popularProducts;
 });
 exports.ProductServices = {
     GetProductsFromDB,

@@ -33,7 +33,7 @@ const OverviewFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
             totalProduct: true,
         },
         where: {
-            paymentStatus: true,
+            paymentStatus: client_1.PaymentStatus.PAID,
         },
     });
     const result = {

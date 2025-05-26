@@ -163,7 +163,7 @@ model Order {
   updatedAt     DateTime    @updatedAt
   orderItems    OrderItem[]
   shippingFee   String
-  paymentStatus Boolean
+  paymentStatus PaymentStatus
   Payment       Payment[]
 
   @@map("orders")

@@ -34,7 +34,7 @@ app.use(express_1.default.urlencoded({ extended: true }));
 // Test route
 app.get("/", (req, res) => {
     res.send({
-        Message: "Backend is running successfully 🏃🏻‍♂️‍➡️",
+        Message: "Backend is running successfully smoothly 🏃🏻‍♂️‍➡️",
     });
 });
 // API routes

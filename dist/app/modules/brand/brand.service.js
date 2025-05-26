@@ -20,6 +20,9 @@ const GetBrandsFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
     const brand = yield prisma_1.default.brand.findMany({
         where: { isDeleted: false },
     });
+    if (brand.length === 0) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No Brand Available");
+    }
     return brand;
 });
 const GetBrandByIdFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -29,6 +32,9 @@ const GetBrandByIdFromDB = (id) => __awaiter(void 0, void 0, void 0, function* (
             isDeleted: false,
         },
     });
+    if (uniqueBrand === null) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No Brand Available");
+    }
     return uniqueBrand;
 });
 const CreateBrandIntoDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
@@ -52,8 +58,8 @@ const UpdateBrandIntoDB = (id, payload) => __awaiter(void 0, void 0, void 0, fun
             id,
         },
     });
-    if (isBrandExists == null) {
-        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Brand does not exists!");
+    if (isBrandExists === null) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No Brand Found");
     }
     const result = yield prisma_1.default.brand.update({
         where: { id },
@@ -68,8 +74,8 @@ const DeleteBrandFromDB = (id) => __awaiter(void 0, void 0, void 0, function* ()
             isDeleted: false,
         },
     });
-    if (isBrandExists == null) {
-        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Brand does not exists!");
+    if (isBrandExists === null) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No Brand Available");
     }
     yield prisma_1.default.brand.update({
         where: {
