@@ -13,10 +13,15 @@ router.post(
   cartControllers.addToCart
 );
 
-router.patch(
-  "/update/:id",
+router.delete(
+  "/remove/:id",
   AuthGurd(UserRole.CUSTOMER),
-  cartControllers.updateCart
+  cartControllers.removeItemFromCart
+);
+router.delete(
+  "/remove-cart/:id",
+  AuthGurd(UserRole.CUSTOMER),
+  cartControllers.clearCart
 );
 
 export const cartRoutes = router;

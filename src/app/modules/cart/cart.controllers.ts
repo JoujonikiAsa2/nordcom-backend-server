@@ -13,17 +13,27 @@ const addToCart = catchAsync(async (req, res) => {
     data: result,
   });
 });
-const updateCart = catchAsync(async (req, res) => {
-  const result = await cartServices.updateCartInDB(req.params.id, req.body);
+const removeItemFromCart = catchAsync(async (req, res) => {
+  const result = await cartServices.removeItemFromCartInDB(req.params.id);
   sendResponse(res, {
     statusCode: status.OK,
     success: true,
     message: "Cart updated successfully",
+    data: result,
+  });
+});
+const clearCart = catchAsync(async (req, res) => {
+  const result = await cartServices.clearCartFromDB(req.params.id);
+  sendResponse(res, {
+    statusCode: status.OK,
+    success: true,
+    message: result,
     data: {},
   });
 });
 
 export const cartControllers = {
   addToCart,
-  updateCart,
+  removeItemFromCart,
+  clearCart,
 };

@@ -23,17 +23,17 @@ const createOrderInDB = async (email: string) => {
 
   // Check if cart is empty
   const { items } = cart;
-  const items_withProducts: {
-    productId: string;
-    quantity: number;
-    price: number;
-  }[] = items.map((item) => ({ ...item, price: 0 })); // Initialize price to 0
   if (items.length === 0) {
     throw new ApiError(
       status.BAD_REQUEST,
       "Cart is empty. Cannot create order."
     );
   }
+  const items_withProducts: {
+    productId: string;
+    quantity: number;
+    price: number;
+  }[] = items.map((item) => ({ ...item, price: 0 })); // Initialize price to 0
   console.log("Cart Details: ", items);
   const totalProduct = items.reduce((acc, item) => acc + item.quantity, 0);
   let totalAmount = 0;
@@ -50,7 +50,7 @@ const createOrderInDB = async (email: string) => {
       if (isProductExists.stock < item.quantity) {
         throw new ApiError(
           status.BAD_REQUEST,
-          `Product ${isProductExists.name} is out of stock.`
+          `${isProductExists.name} is out of stock.`
         );
       }
 
