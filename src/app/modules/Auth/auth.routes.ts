@@ -1,7 +1,7 @@
 import express from "express";
 import validateRequest from "../../middleware/validateRequest";
 import { AuthControllers } from "./auth.controllers";
-import { AuthSchemas } from "./Auth.ZodValidations";
+import { AuthSchemas } from "./auth.zodvalidations";
 
 const router = express.Router();
 

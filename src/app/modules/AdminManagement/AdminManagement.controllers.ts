@@ -1,7 +1,7 @@
 import status from "http-status";
 import catchAsync from "../../shared/catchAsync";
 import sendResponse from "../../shared/sendResponse";
-import { AdminManagementServices } from "./AdminManagement.services";
+import { AdminManagementServices } from "./adminManagement.services";
 import { UserStatus } from "@prisma/client";
 
 const ChangeUserStatus = catchAsync(async (req, res) => {

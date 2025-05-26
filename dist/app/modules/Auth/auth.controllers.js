@@ -18,7 +18,7 @@ const http_status_1 = __importDefault(require("http-status"));
 const config_1 = __importDefault(require("../../../config"));
 const sendResponse_1 = __importDefault(require("../../shared/sendResponse"));
 const auth_services_1 = require("./auth.services");
-const jwtHelpers_1 = require("../../../Helpers/jwtHelpers");
+const jwtHelpers_1 = require("../../../helpers/jwtHelpers");
 const login = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield auth_services_1.AuthServices.login(req.body);
     let { name, email, role } = result;
