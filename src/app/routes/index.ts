@@ -9,6 +9,9 @@ import { PaymentRoutes } from "../modules/payment/payment.routes";
 import { AnalyticRoutes } from "../modules/analytic/analytic.route";
 import { FavoriteProductRoutes } from "../modules/favoriteProduct/favoriteProduct.route";
 import { NewsletterRoutes } from "../modules/newsletter/newsletter.route";
+import { OrderRoutes } from "../modules/orders/orders.routes";
+import { cartRoutes } from "../modules/cart/cart.routes";
+
 
 const router = express.Router();
 
@@ -24,6 +27,15 @@ const moduleRoutes = [
   {
     path: "/admin",
     route: AdminMangementRoutes,
+  },
+
+  {
+    path: "/cart",
+    route: cartRoutes,
+  },
+  {
+    path: "/order",
+    route: OrderRoutes,
   },
   {
     path: "/brand",

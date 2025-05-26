@@ -5,6 +5,7 @@ export const generateToken = async (
   secret: string,
   tokenType: string
 ) => {
+  // console.log("payload", payload);
   const token = await jwt.sign(payload!, secret!, {
     expiresIn:
       tokenType === "access" ? "1d" : tokenType === "refresh" ? "30d" : "3m",

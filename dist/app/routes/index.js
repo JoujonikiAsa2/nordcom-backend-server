@@ -14,6 +14,8 @@ const payment_routes_1 = require("../modules/payment/payment.routes");
 const analytic_route_1 = require("../modules/analytic/analytic.route");
 const favoriteProduct_route_1 = require("../modules/favoriteProduct/favoriteProduct.route");
 const newsletter_route_1 = require("../modules/newsletter/newsletter.route");
+const orders_routes_1 = require("../modules/orders/orders.routes");
+const cart_routes_1 = require("../modules/cart/cart.routes");
 const router = express_1.default.Router();
 const moduleRoutes = [
     {
@@ -27,6 +29,14 @@ const moduleRoutes = [
     {
         path: "/admin",
         route: adminManagement_routes_1.AdminMangementRoutes,
+    },
+    {
+        path: "/cart",
+        route: cart_routes_1.cartRoutes,
+    },
+    {
+        path: "/order",
+        route: orders_routes_1.OrderRoutes,
     },
     {
         path: "/brand",

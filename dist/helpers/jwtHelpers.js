@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.jwtHelpers = exports.generateToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const generateToken = (payload, secret, tokenType) => __awaiter(void 0, void 0, void 0, function* () {
+    // console.log("payload", payload);
     const token = yield jsonwebtoken_1.default.sign(payload, secret, {
         expiresIn: tokenType === "access" ? "1d" : tokenType === "refresh" ? "30d" : "3m",
     });
