@@ -48,3 +48,4 @@ docker-compose.override.yml
 # Miscellaneous
 *.tgz
 *.lock-wscript
+.vercel
