@@ -1,7 +1,12 @@
 import express from "express";
-import { UserRoutes } from "../modules/User/User.routes";
-import { AuthRoutes } from "../modules/Auth/auth.routes";
-import { AdminMangementRoutes } from "../modules/AdminManagement/AdminManagement.routes";
+import { UserRoutes } from "../modules/user/user.routes";
+import { AuthRoutes } from "../modules/auth/auth.routes";
+import { AdminMangementRoutes } from "../modules/adminManagement/adminManagement.routes";
+import { BrandRoutes } from "../modules/brand/brand.route";
+import { CategoryRoutes } from "../modules/category/category.route";
+import { ProductRoutes } from "../modules/product/product.route";
+import { PaymentRoutes } from "../modules/payment/payment.routes";
+import { AnalyticRoutes } from "../modules/analytic/analytic.route";
 
 const router = express.Router();
 
@@ -17,6 +22,26 @@ const moduleRoutes = [
   {
     path: "/admin",
     route: AdminMangementRoutes,
+  },
+  {
+    path: "/brand",
+    route: BrandRoutes,
+  },
+  {
+    path: "/category",
+    route: CategoryRoutes,
+  },
+  {
+    path: "/product",
+    route: ProductRoutes,
+  },
+  {
+    path: "/payment",
+    route: PaymentRoutes,
+  },
+  {
+    path: "/analytic-data",
+    route: AnalyticRoutes,
   },
 ];
 

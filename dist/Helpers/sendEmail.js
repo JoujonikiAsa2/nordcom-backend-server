@@ -39,6 +39,7 @@ const sendMail = (payload, emailType) => __awaiter(void 0, void 0, void 0, funct
     };
     try {
         let info = yield transporter.sendMail(mailOptions);
+        console.log(info);
         return true;
     }
     catch (error) {

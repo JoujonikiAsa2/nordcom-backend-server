@@ -17,8 +17,8 @@ const ApiError_1 = __importDefault(require("../../errors/ApiError"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const client_1 = require("@prisma/client");
 const http_status_1 = __importDefault(require("http-status"));
-const sendEmail_1 = __importDefault(require("../../../Helpers/sendEmail"));
-const jwtHelpers_1 = require("../../../Helpers/jwtHelpers");
+const sendEmail_1 = __importDefault(require("../../../helpers/sendEmail"));
+const jwtHelpers_1 = require("../../../helpers/jwtHelpers");
 const config_1 = __importDefault(require("../../../config"));
 // new branch created
 const prismaWithPassword = new client_1.PrismaClient();
