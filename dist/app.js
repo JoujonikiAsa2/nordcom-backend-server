@@ -10,7 +10,7 @@ const globalErrorHandler_1 = __importDefault(require("./app/middleware/globalErr
 const routes_1 = __importDefault(require("./app/routes"));
 const app = (0, express_1.default)();
 // Define allowed origins
-const allowedOrigins = ["http://localhost:3000"];
+const allowedOrigins = ["http://localhost:3000", "https://nordcom-marketplace.vercel.app"];
 // Single CORS configuration
 app.use((0, cors_1.default)({
     origin: function (origin, callback) {

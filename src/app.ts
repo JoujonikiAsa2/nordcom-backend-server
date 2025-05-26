@@ -7,7 +7,7 @@ import router from "./app/routes";
 const app: Application = express();
 
 // Define allowed origins
-const allowedOrigins = ["http://localhost:3000"];
+const allowedOrigins = ["http://localhost:3000", "https://nordcom-marketplace.vercel.app"];
 
 // Single CORS configuration
 app.use(
