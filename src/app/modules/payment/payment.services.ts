@@ -5,10 +5,8 @@ import prisma from "../../shared/prisma";
 import { TPayment } from "./payment.zodvalidations";
 import config from "../../../config";
 import { PaymentStatus } from "@prisma/client";
-import { randomUUID } from "crypto";
 import { generateTransactionId } from "./payment.util";
 import sendMail from "../../../helpers/sendEmail";
-import { userInfo } from "os";
 
 const stripe = new Stripe(config.STRIPE_SECRET_KEY as string, {
   apiVersion: "2024-04-10; custom_checkout_beta=v1" as any,
@@ -58,27 +56,36 @@ const CreatePaymentInDB = async (payload: TPayment & { email: string }) => {
     throw new ApiError(status.NOT_FOUND, "Order does not exist");
   }
 
-  const orderedItems = orderInfo?.orderItems.map((item) => item.productId);
+  const orderedItems = orderInfo?.orderItems.map((item) => item);
 
-  orderedItems?.forEach(async (item) => {
+  for (const item of orderedItems) {
     const product = await prisma.product.findUnique({
       where: {
-        id: item,
+        id: item.productId,
       },
     });
     if (product === null) {
-      throw new ApiError(status.NOT_FOUND, "User Not Available");
+      throw new ApiError(status.NOT_FOUND, "Product Not Available");
     }
-    console.log("I got it");
-  });
+  }
 
   // transaction id generate
   const trans_Id = generateTransactionId();
+  const isPaid = await prisma.payment.findFirst({
+    where: {
+      orderId: orderInfo.id,
+      status: PaymentStatus.PAID,
+    },
+  });
+
+  if (isPaid !== null) {
+    throw new ApiError(status.BAD_REQUEST, "Already Paid");
+  }
 
   const result = await prisma.$transaction(async (tr_client) => {
-    const paymentInfo = await prisma.payment.create({
+    const paymentInfo = await tr_client.payment.create({
       data: {
-        amount: orderInfo.totalAmount || 0,
+        amount: orderInfo.totalAmount + Number(orderInfo.shippingFee) || 0,
         paidAt: new Date(),
         orderId: orderInfo.id,
         transactionId: payload.transactionId || trans_Id,
@@ -87,15 +94,20 @@ const CreatePaymentInDB = async (payload: TPayment & { email: string }) => {
       },
     });
 
-    if (paymentInfo === null) {
-      await prisma.order.update({
+    const payment = null;
+    if (!payment) {
+      await prisma.order.delete({
         where: {
           id: orderInfo.id,
-        },
-        data: {
-          paymentStatus: PaymentStatus.FAILED,
-        },
+        }
       });
+
+      for (const item of orderedItems) {
+        await prisma.product.update({
+          where: { id: item.productId },
+          data: { stock: item.product.stock + item.quantity },
+        });
+      }
       throw new ApiError(status.BAD_REQUEST, "Payment Failed");
     }
 
@@ -112,7 +124,7 @@ const CreatePaymentInDB = async (payload: TPayment & { email: string }) => {
 
     sendMail(emailInfo, "payment");
 
-    await prisma.order.update({
+    await tr_client.order.update({
       where: {
         id: orderInfo.id,
       },
@@ -120,6 +132,7 @@ const CreatePaymentInDB = async (payload: TPayment & { email: string }) => {
         paymentStatus: PaymentStatus.PAID,
       },
     });
+    return paymentInfo;
   });
 
   return result;
