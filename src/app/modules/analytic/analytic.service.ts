@@ -21,7 +21,7 @@ const OverviewFromDB = async () => {
       totalProduct: true,
     },
     where: {
-      paymentStatus: true,
+      paymentStatus: PaymentStatus.PAID,
     },
   });
 

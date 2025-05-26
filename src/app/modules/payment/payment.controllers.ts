@@ -41,7 +41,7 @@ const GetMyPayments = catchAsync(async (req, res) => {
 
 const GetPaymentByTransId = catchAsync(async (req, res) => {
   const { transId } = req.params;
-  const result = await PaymentServices.GetPaymentsByTransId(transId as string);
+  const result = await PaymentServices.GetPaymentByTransId(transId as string);
   sendResponse(res, {
     statusCode: status.OK,
     success: true,
@@ -66,7 +66,7 @@ const GetAllPayments = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: status.OK,
     success: true,
-    message: "Payments Fetched Successfully.",
+    message: "Payments Fetched Successfully." ,
     data: result,
   });
 });

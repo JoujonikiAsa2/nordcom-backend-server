@@ -81,7 +81,7 @@ model Brand {
   description String
   logoUrl     String?
   products    Product[]
-  isFeatured  Boolean   @default (false)
+  isFeatured  Boolean   @default(false)
   isDeleted   Boolean   @default(false)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -163,7 +163,7 @@ model Order {
   updatedAt     DateTime    @updatedAt
   orderItems    OrderItem[]
   shippingFee   String
-  paymentStatus Boolean
+  paymentStatus PaymentStatus
   Payment       Payment[]
 
   @@map("orders")
