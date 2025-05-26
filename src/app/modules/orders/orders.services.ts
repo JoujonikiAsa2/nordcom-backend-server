@@ -2,7 +2,8 @@ import ApiError from "../../errors/ApiError";
 import status from "http-status";
 import prisma from "../../shared/prisma";
 import { OrderStatus, PaymentStatus } from "@prisma/client";
-
+import httpStatus from "http-status";
+import { getAvailableStatus } from "./orders.helper";
 // new branch created
 const createOrderInDB = async (email: string) => {
   // Check is user already exists
@@ -19,7 +20,7 @@ const createOrderInDB = async (email: string) => {
     },
   });
   if (!cart) throw new ApiError(status.NOT_FOUND, "Cart Not Found.");
-  
+
   // Check if cart is empty
   const { items } = cart;
   const items_withProducts: {
@@ -131,14 +132,49 @@ const createOrderInDB = async (email: string) => {
     }
     return orderCreated;
   });
-  // orderId
-  // productId
-  // quantity
-  // price
 
   return result;
 };
 
+const getAllOrdersFromDB = async () => {
+  const result = await prisma.order.findMany();
+  if (!result || result.length === 0) {
+    throw new ApiError(httpStatus.NOT_FOUND, "No orders found.");
+  }
+  const orderWithAvailableStatus = result.map((order) => {
+    return {
+      ...order,
+      availableStatus: getAvailableStatus(order.status),
+    };
+  });
+  return orderWithAvailableStatus;
+};
+
+const changeOrderStatusInDB = async (id: string, status: OrderStatus) => {
+  // Check if order exists
+  const isOrderExists = await prisma.order.findUnique({
+    where: { id },
+  });
+  if (!isOrderExists)
+    throw new ApiError(httpStatus.NOT_FOUND, "Order Not Found.");
+  // Update order status
+  const updatedOrder = await prisma.order.update({
+    where: { id },
+    data: {
+      status,
+    },
+  });
+  if (!updatedOrder)
+    throw new ApiError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      "Failed to update order status."
+    );
+
+  return { updatedOrder };
+};
+
 export const orderServices = {
   createOrderInDB,
+  getAllOrdersFromDB,
+  changeOrderStatusInDB,
 };

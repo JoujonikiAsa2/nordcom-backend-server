@@ -14,4 +14,7 @@ router.post(
   orderControllers.createOrder
 );
 
+router.get("/", AuthGurd(UserRole.ADMIN), orderControllers.getAllOrders);
+router.patch("/status/:id", AuthGurd(UserRole.ADMIN), orderControllers.changeOrderStatus);
+
 export const OrderRoutes = router;

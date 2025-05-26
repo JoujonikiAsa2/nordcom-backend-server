@@ -10,59 +10,92 @@ import prisma from "../../shared/prisma";
 // new branch created
 const addToCartInDB = async (payload: any) => {
   console.log("Creating order in DB with payload:", payload);
-  const { userId, items } = payload;
+  const { userId, item } = payload;
+  console.log("User ID:", userId, "Items:", item);
 
   if (!userId) throw new ApiError(status.BAD_REQUEST, "User ID is required.");
-  if (!items) throw new ApiError(status.BAD_REQUEST, "Items are required.");
+  if (!item) throw new ApiError(status.BAD_REQUEST, "Items are required.");
   // Check cart already exists for the user
   const existingCart = await prisma.cart.findFirst({
     where: {
       userId,
     },
   });
-  if (existingCart) {
-    throw new ApiError(
-      status.BAD_REQUEST,
-      "Cart already exists for this user."
-    );
-  }
-  const result = await prisma.$transaction(async (tx) => {
-    const addToCartTable = await tx.cart.create({
+
+  if (!existingCart) {
+    console.log("No existing cart found for user:");
+    // add new cart and then add items to it
+    const addToCartTable = await prisma.cart.create({
       data: {
         userId,
       },
     });
 
-    if (!addToCartTable) {
+    // add item to cart items table
+    const addToCartItemsTable = await prisma.cartItem.create({
+      data: {
+        cartId: addToCartTable.id,
+        productId: item.productId,
+        quantity: item.quantity,
+      },
+    });
+    if (!addToCartTable || !addToCartItemsTable) {
       throw new ApiError(
         status.INTERNAL_SERVER_ERROR,
         "Failed to add to cart."
       );
     }
-
-    const addCartIdToItemsArray = items.map((item: any) => ({
-      ...item,
-      cartId: addToCartTable.id,
-    }));
-
-    const addToCartItemsTable = await tx.cartItem.createMany({
-      data: addCartIdToItemsArray,
-    });
-
-    if (!addToCartItemsTable) {
-      throw new ApiError(
-        status.INTERNAL_SERVER_ERROR,
-        "Failed to add to cart items."
-      );
-    }
-
     return addToCartTable;
-  });
+  } else {
+    console.log("Existing cart found for user:");
+    // find if the item is new to add
+    const existingItem = await prisma.cartItem.findFirst({
+      where: {
+        cartId: existingCart.id,
+        productId: item.productId,
+      },
+    });
+    if (existingItem) {
+      console.log("Existing item found in cart:", existingItem);
+      // if item exists, update the quantity
+      const udpatedQuantity = existingItem.quantity + item.quantity;
+      const updatedCartItem = await prisma.cartItem.update({
+        where: {
+          id: existingItem.id,
+          productId: existingItem.productId,
+        },
+        data: {
+          quantity: udpatedQuantity,
+        },
+      });
+      if (!updatedCartItem) {
+        throw new ApiError(
+          status.INTERNAL_SERVER_ERROR,
+          "Failed to update cart item."
+        );
+      }
+      return updatedCartItem;
+    } else {
+      console.log("No existing item found in cart, adding new item:", item);
+      // if item does not exist, add it to the cart items
+      const addToCartItemsTable = await prisma.cartItem.create({
+        data: {
+          cartId: existingCart.id,
+          productId: item.productId,
+          quantity: item.quantity,
+        },
+      });
+      if (!addToCartItemsTable) {
+        throw new ApiError(
+          status.INTERNAL_SERVER_ERROR,
+          "Failed to add item to cart."
+        );
+      }
+      return addToCartItemsTable;
+    }
+  }
 
-  if (!result)
-    throw new ApiError(status.INTERNAL_SERVER_ERROR, "Failed to add to cart.");
-
-  return result;
+  // return result;
 };
 
 const updateCartInDB = async (id: string, payload: any) => {
