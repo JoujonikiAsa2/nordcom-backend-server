@@ -10,7 +10,6 @@ A robust e-commerce REST API built with Node.js, Express.js, PostgreSQL, Prisma 
 - **Prisma** - ORM for database operations
 - **TypeScript** - Programming language
 - **JSON Web Token** - Authentication
-- **Jest** - Testing framework
 
 ## Features
 
