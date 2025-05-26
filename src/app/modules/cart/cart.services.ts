@@ -1,10 +1,5 @@
 import ApiError from "../../errors/ApiError";
-import bcrypt from "bcrypt";
-import { PrismaClient } from "@prisma/client";
 import status from "http-status";
-import sendMail from "../../../Helpers/sendEmail";
-import { jwtHelpers } from "../../../Helpers/jwtHelpers";
-import config from "../../../config";
 import prisma from "../../shared/prisma";
 
 // new branch created
@@ -25,7 +20,7 @@ const addToCartInDB = async (payload: any) => {
     if (item.quantity <= 0) {
       throw new ApiError(
         status.BAD_REQUEST,
-        "Quantity must be greater than 10."
+        "Quantity must be greater than 0."
       );
     }
     const addToCartTable = await prisma.cart.create({
@@ -81,7 +76,7 @@ const addToCartInDB = async (payload: any) => {
       if (item.quantity <= 0) {
         throw new ApiError(
           status.BAD_REQUEST,
-          "Quantity must be greater than 0..."
+          "Quantity must be greater than 0."
         );
       }
       // if item does not exist, add it to the cart items

@@ -1,7 +1,7 @@
 import express from "express";
-import { UserRoutes } from "../modules/User/User.routes";
-import { AuthRoutes } from "../modules/Auth/auth.routes";
-import { AdminMangementRoutes } from "../modules/AdminManagement/AdminManagement.routes";
+import { UserRoutes } from "../modules/user/User.routes";
+import { AuthRoutes } from "../modules/auth/auth.routes";
+import { AdminMangementRoutes } from "../modules/adminManagement/AdminManagement.routes";
 import { OrderRoutes } from "../modules/orders/orders.routes";
 import { cartRoutes } from "../modules/cart/cart.routes";
 import { BrandRoutes } from "../modules/brand/brand.route";

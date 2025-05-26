@@ -4,6 +4,7 @@ import prisma from "../../shared/prisma";
 import { OrderStatus, PaymentStatus } from "@prisma/client";
 import httpStatus from "http-status";
 import { getAvailableStatus } from "./orders.helper";
+import { randomUUID } from "crypto";
 // new branch created
 const createOrderInDB = async (email: string) => {
   // Check is user already exists
@@ -81,7 +82,7 @@ const createOrderInDB = async (email: string) => {
         totalAmount,
         totalProduct,
         status: OrderStatus.PENDING,
-        shippingId: "",
+        shippingId: randomUUID(),
         shippingFee: 70,
       },
     });
@@ -123,13 +124,7 @@ const createOrderInDB = async (email: string) => {
         "Failed to clear cart items."
       );
     }
-    // clear from cart table
-    const cartDeleted = await prisma.cart.delete({
-      where: { id: cart.id },
-    });
-    if (!cartDeleted) {
-      throw new ApiError(status.INTERNAL_SERVER_ERROR, "Failed to clear cart.");
-    }
+
     return orderCreated;
   });
 
