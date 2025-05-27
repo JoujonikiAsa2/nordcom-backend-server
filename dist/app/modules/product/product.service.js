@@ -32,6 +32,11 @@ const GetProductsFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
         where: {
             isDeleted: false,
         },
+        include: {
+            brand: true,
+            category: true,
+            Review: true,
+        },
     });
     if (product.length === 0) {
         throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No Product Found");
@@ -43,6 +48,11 @@ const GetProductByIdFromDB = (id) => __awaiter(void 0, void 0, void 0, function*
         where: {
             id,
             isDeleted: false,
+        },
+        include: {
+            brand: true,
+            category: true,
+            Review: true,
         },
     });
     if (uniqueProduct === null) {

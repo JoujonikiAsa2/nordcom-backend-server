@@ -6,8 +6,11 @@ import { Brand } from "@prisma/client";
 const GetBrandsFromDB = async () => {
   const brand = await prisma.brand.findMany({
     where: { isDeleted: false },
+    include: {
+      products: true,
+    },
   });
-    if (brand.length === 0) {
+  if (brand.length === 0) {
     throw new ApiError(status.NOT_FOUND, "No Brand Available");
   }
   return brand;
@@ -20,7 +23,7 @@ const GetBrandByIdFromDB = async (id: string) => {
       isDeleted: false,
     },
   });
-      if (uniqueBrand === null) {
+  if (uniqueBrand === null) {
     throw new ApiError(status.NOT_FOUND, "No Brand Available");
   }
   return uniqueBrand;
@@ -47,7 +50,7 @@ const UpdateBrandIntoDB = async (id: string, payload: Partial<Brand>) => {
       id,
     },
   });
-  if (isBrandExists=== null) {
+  if (isBrandExists === null) {
     throw new ApiError(status.NOT_FOUND, "No Brand Found");
   }
   const result = await prisma.brand.update({
@@ -63,7 +66,7 @@ const DeleteBrandFromDB = async (id: string) => {
       isDeleted: false,
     },
   });
-  if (isBrandExists=== null) {
+  if (isBrandExists === null) {
     throw new ApiError(status.NOT_FOUND, "No Brand Available");
   }
   await prisma.brand.update({

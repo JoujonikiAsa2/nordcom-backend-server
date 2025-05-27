@@ -17,7 +17,13 @@ const prisma_1 = __importDefault(require("../../shared/prisma"));
 const ApiError_1 = __importDefault(require("../../errors/ApiError"));
 const http_status_1 = __importDefault(require("http-status"));
 const GetCategorysFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
-    const category = yield prisma_1.default.category.findMany({});
+    const category = yield prisma_1.default.category.findMany({
+        include: {
+            Products: true,
+            children: true,
+            parent: true
+        }
+    });
     if (category.length === 0) {
         throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No Category Available");
     }

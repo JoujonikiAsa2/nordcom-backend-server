@@ -7,11 +7,11 @@ import { NewsletterSchemas } from "./newsletter.zodvalidation";
 
 const router = express.Router();
 
-router.get("/", NewsletterControllers.GetNewsletters);
+router.get("/", AuthGurd(UserRole.ADMIN), NewsletterControllers.GetNewsletters);
 
 router.post(
   "/",
-  AuthGurd(UserRole.ADMIN),
+
   validateRequest(NewsletterSchemas.createNewsletterSchema),
   NewsletterControllers.CreateNewsletter
 );
@@ -21,6 +21,10 @@ router.delete(
   AuthGurd(UserRole.ADMIN),
   NewsletterControllers.DeleteNewsletter
 );
-router.get("/:email", NewsletterControllers.GetNewsletterByEmail);
+router.get(
+  "/:email",
+  AuthGurd(UserRole.ADMIN),
+  NewsletterControllers.GetNewsletterByEmail
+);
 
 export const NewsletterRoutes = router;

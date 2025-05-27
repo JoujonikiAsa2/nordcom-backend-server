@@ -4,7 +4,13 @@ import status from "http-status";
 import { Category } from "@prisma/client";
 
 const GetCategorysFromDB = async () => {
-  const category = await prisma.category.findMany({});
+  const category = await prisma.category.findMany({
+    include:{
+      Products: true,
+      children: true,
+      parent: true
+    }
+  });
   if (category.length === 0) {
     throw new ApiError(status.NOT_FOUND, "No Category Available");
   }
@@ -17,7 +23,7 @@ const GetCategoryByIdFromDB = async (id: string) => {
       id,
     },
   });
-  if (uniqueCategory=== null) {
+  if (uniqueCategory === null) {
     throw new ApiError(status.NOT_FOUND, "No Category Available");
   }
   return uniqueCategory;
@@ -43,7 +49,7 @@ const UpdateCategoryIntoDB = async (id: string, payload: Partial<Category>) => {
       id,
     },
   });
-  if (isCategoryExists=== null) {
+  if (isCategoryExists === null) {
     throw new ApiError(status.NOT_FOUND, "No Category Available");
   }
   const result = await prisma.category.update({
@@ -59,7 +65,7 @@ const DeleteCategoryFromDB = async (id: string) => {
       id,
     },
   });
-  if (isCategoryExists=== null) {
+  if (isCategoryExists === null) {
     throw new ApiError(status.NOT_FOUND, "No Category Available");
   }
   await prisma.category.delete({
