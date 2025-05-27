@@ -9,12 +9,12 @@ import { UserStatus } from "@prisma/client";
 const registerUserIntoDB = async (payload: TUser) => {
   const { name, email, password } = payload;
   // Check if user already exists
-  const user = await prisma.user.findUnique({
+  const user = await prisma.user.findUniqueOrThrow({
     where: {
       email,
     },
   });
-  if (user) throw new ApiError(status.CONFLICT, "User Already Exists.");
+  // if (user) throw new ApiError(status.CONFLICT, "User Already Exists.");
 
   // Hash password
   const hashedPassword = bcrypt.hashSync(password, 10);

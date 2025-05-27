@@ -21,13 +21,12 @@ const client_1 = require("@prisma/client");
 const registerUserIntoDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, password } = payload;
     // Check if user already exists
-    const user = yield prisma_1.default.user.findUnique({
+    const user = yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             email,
         },
     });
-    if (user)
-        throw new ApiError_1.default(http_status_1.default.CONFLICT, "User Already Exists.");
+    // if (user) throw new ApiError(status.CONFLICT, "User Already Exists.");
     // Hash password
     const hashedPassword = bcrypt_1.default.hashSync(password, 10);
     const userData = {
