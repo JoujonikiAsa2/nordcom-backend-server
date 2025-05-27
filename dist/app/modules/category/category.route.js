@@ -14,6 +14,6 @@ const router = express_1.default.Router();
 router.get("/", category_controller_1.CategoryControllers.GetCategorys);
 router.post("/", (0, authGurd_1.default)(client_1.UserRole.ADMIN), (0, validateRequest_1.default)(category_zodvalidation_1.CategorySchemas.createCategorySchema), category_controller_1.CategoryControllers.CreateCategory);
 router.patch("/update/:id", (0, authGurd_1.default)(client_1.UserRole.ADMIN), (0, validateRequest_1.default)(category_zodvalidation_1.CategorySchemas.updateCategorySchema), category_controller_1.CategoryControllers.UpdateCategory);
-router.delete("/delete/:id", category_controller_1.CategoryControllers.DeleteCategory);
+router.delete("/delete/:id", (0, authGurd_1.default)(client_1.UserRole.ADMIN), category_controller_1.CategoryControllers.DeleteCategory);
 router.get("/:id", category_controller_1.CategoryControllers.GetCategoryById);
 exports.CategoryRoutes = router;

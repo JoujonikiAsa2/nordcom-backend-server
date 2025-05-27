@@ -19,6 +19,9 @@ const http_status_1 = __importDefault(require("http-status"));
 const GetBrandsFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
     const brand = yield prisma_1.default.brand.findMany({
         where: { isDeleted: false },
+        include: {
+            products: true,
+        },
     });
     if (brand.length === 0) {
         throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No Brand Available");

@@ -8,6 +8,12 @@ const GetProductsFromDB = async () => {
     where: {
       isDeleted: false,
     },
+    include: {
+      brand: true,
+      category: true,
+      Review: true,
+      
+    },
   });
   if (product.length === 0) {
     throw new ApiError(status.NOT_FOUND, "No Product Found");
@@ -20,6 +26,11 @@ const GetProductByIdFromDB = async (id: string) => {
     where: {
       id,
       isDeleted: false,
+    },
+    include: {
+      brand: true,
+      category: true,
+      Review: true,
     },
   });
   if (uniqueProduct === null) {

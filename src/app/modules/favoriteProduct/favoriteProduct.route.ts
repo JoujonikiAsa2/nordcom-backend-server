@@ -7,7 +7,7 @@ import { FavoriteProductControllers } from "./favoriteProduct.controller";
 
 const router = express.Router();
 
-router.get("/", FavoriteProductControllers.GetFavoriteProducts);
+router.get("/",  AuthGurd(UserRole.ADMIN), FavoriteProductControllers.GetFavoriteProducts);
 
 router.post(
   "/",
@@ -17,9 +17,9 @@ router.post(
 );
 router.delete(
   "/delete/:id",
-  AuthGurd(UserRole.ADMIN),
+  AuthGurd(UserRole.ADMIN, UserRole.CUSTOMER),
   FavoriteProductControllers.DeleteFavoriteProduct
 );
-router.get("/:userId", FavoriteProductControllers.GetFavoriteProductByUserId);
+router.get("/:userId",  AuthGurd(UserRole.CUSTOMER), FavoriteProductControllers.GetFavoriteProductByUserId);
 
 export const FavoriteProductRoutes = router;

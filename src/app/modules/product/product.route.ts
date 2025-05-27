@@ -29,13 +29,12 @@ router.patch(
   ProductControllers.UpdateProduct
 );
 
-router.delete("/delete/:id", ProductControllers.DeleteProduct);
+router.delete("/delete/:id",  AuthGurd(UserRole.ADMIN), ProductControllers.DeleteProduct);
 
 router.get("/:id", ProductControllers.GetProductById);
 
 router.get(
   "/view/popular-product",
-  // AuthGurd(UserRole.ADMIN),
   ProductControllers.PopularProduct
 );
 

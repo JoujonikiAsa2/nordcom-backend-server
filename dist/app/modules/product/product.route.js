@@ -16,9 +16,7 @@ const router = express_1.default.Router();
 router.get("/", product_controller_1.ProductControllers.GetProducts);
 router.post("/", (0, authGurd_1.default)(client_1.UserRole.ADMIN), UploadImage_1.UploadImageInServer.single("file"), cloudinaryUpload_1.UploadToCloudinary, (0, validateRequest_1.default)(product_zodvalidation_1.ProductSchemas.createProductSchema), product_controller_1.ProductControllers.CreateProduct);
 router.patch("/update/:id", (0, authGurd_1.default)(client_1.UserRole.ADMIN), UploadImage_1.UploadImageInServer.single("file"), cloudinaryUpload_1.UploadToCloudinary, (0, validateRequest_1.default)(product_zodvalidation_1.ProductSchemas.updateProductSchema), product_controller_1.ProductControllers.UpdateProduct);
-router.delete("/delete/:id", product_controller_1.ProductControllers.DeleteProduct);
+router.delete("/delete/:id", (0, authGurd_1.default)(client_1.UserRole.ADMIN), product_controller_1.ProductControllers.DeleteProduct);
 router.get("/:id", product_controller_1.ProductControllers.GetProductById);
-router.get("/view/popular-product", 
-// AuthGurd(UserRole.ADMIN),
-product_controller_1.ProductControllers.PopularProduct);
+router.get("/view/popular-product", product_controller_1.ProductControllers.PopularProduct);
 exports.ProductRoutes = router;
