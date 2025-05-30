@@ -5,6 +5,7 @@ import { OrderStatus, PaymentStatus } from "@prisma/client";
 import httpStatus from "http-status";
 import { getAvailableStatus } from "./orders.helper";
 import { randomUUID } from "crypto";
+import { JwtPayload } from "jsonwebtoken";
 // new branch created
 const createOrderInDB = async (email: string) => {
   // Check is user already exists
@@ -20,6 +21,7 @@ const createOrderInDB = async (email: string) => {
       items: true,
     },
   });
+
   if (!cart) throw new ApiError(status.NOT_FOUND, "Cart Not Found.");
 
   // Check if cart is empty
@@ -168,8 +170,28 @@ const changeOrderStatusInDB = async (id: string, status: OrderStatus) => {
   return { updatedOrder };
 };
 
+const getMyOrdersFromDB = async (user: JwtPayload) => {
+  const isUserExists = await prisma.user.findFirst({
+    where: { email: user?.email },
+  });
+  if (!isUserExists) throw new ApiError(status.NOT_FOUND, "User Not Found.");
+  const result = await prisma.order.findMany({
+    where: {
+      userId: isUserExists?.id,
+    },
+    include: {
+      orderItems: true,
+      Payment: true,
+      user: true,
+    },
+  });
+
+  return result;
+};
+
 export const orderServices = {
   createOrderInDB,
   getAllOrdersFromDB,
   changeOrderStatusInDB,
+  getMyOrdersFromDB,
 };

@@ -9,12 +9,13 @@ const router = express.Router();
 
 router.post(
   "/create",
-  AuthGurd(UserRole.CUSTOMER),
+  AuthGurd(UserRole.CUSTOMER, UserRole.ADMIN),
   // validateRequest(orderSchemas.createOrderSchema),
   orderControllers.createOrder
 );
 
 router.get("/", AuthGurd(UserRole.ADMIN), orderControllers.getAllOrders);
 router.patch("/status/:id", AuthGurd(UserRole.ADMIN), orderControllers.changeOrderStatus);
+router.get("/my-orders", AuthGurd(UserRole.CUSTOMER, UserRole.ADMIN), orderControllers.getMyOrders);
 
 export const OrderRoutes = router;
