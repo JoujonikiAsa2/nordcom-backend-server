@@ -16,6 +16,39 @@ exports.cartServices = void 0;
 const ApiError_1 = __importDefault(require("../../errors/ApiError"));
 const http_status_1 = __importDefault(require("http-status"));
 const prisma_1 = __importDefault(require("../../shared/prisma"));
+const getCartFromDB = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const { role, email } = user;
+    const isUserExists = yield prisma_1.default.user.findUnique({
+        where: {
+            email,
+        },
+    });
+    if (!isUserExists)
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "User Not Found.");
+    const userId = isUserExists.id;
+    const data = yield prisma_1.default.cart.findFirst({
+        where: {
+            userId: isUserExists.id,
+        },
+        include: {
+            items: {
+                include: {
+                    product: true,
+                },
+            },
+            user: true,
+        },
+    });
+    console.log(data);
+    const subtotal = (_a = data === null || data === void 0 ? void 0 : data.items) === null || _a === void 0 ? void 0 : _a.reduce((sum, item) => {
+        return sum + item.product.price * item.quantity;
+    }, 0);
+    if (!data === null) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "Cart not found.");
+    }
+    return { data, subtotal };
+});
 // new branch created
 const addToCartInDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId, item } = payload;
@@ -48,6 +81,7 @@ const addToCartInDB = (payload) => __awaiter(void 0, void 0, void 0, function* (
                 quantity: item.quantity,
             },
         });
+        console.log(addToCartItemsTable);
         if (!addToCartTable || !addToCartItemsTable) {
             throw new ApiError_1.default(http_status_1.default.INTERNAL_SERVER_ERROR, "Failed to add to cart.");
         }
@@ -133,6 +167,7 @@ const clearCartFromDB = (cartId) => __awaiter(void 0, void 0, void 0, function* 
     return "Cart cleared successfully.";
 });
 exports.cartServices = {
+    getCartFromDB,
     addToCartInDB,
     removeItemFromCartInDB,
     clearCartFromDB,

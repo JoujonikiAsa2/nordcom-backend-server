@@ -5,11 +5,11 @@ import { Category } from "@prisma/client";
 
 const GetCategorysFromDB = async () => {
   const category = await prisma.category.findMany({
-    include:{
+    include: {
       Products: true,
       children: true,
-      parent: true
-    }
+      parent: true,
+    },
   });
   if (category.length === 0) {
     throw new ApiError(status.NOT_FOUND, "No Category Available");
@@ -21,6 +21,14 @@ const GetCategoryByIdFromDB = async (id: string) => {
   const uniqueCategory = await prisma.category.findUnique({
     where: {
       id,
+    },
+    include: {
+      Products: true,
+      children: {
+        include: {
+          Products: true,
+        },
+      }
     },
   });
   if (uniqueCategory === null) {
@@ -81,3 +89,4 @@ export const CategoryServices = {
   UpdateCategoryIntoDB,
   DeleteCategoryFromDB,
 };
+

@@ -4,6 +4,17 @@ import config from "../../../config";
 import sendResponse from "../../shared/sendResponse";
 import { cartServices } from "./cart.services";
 
+const getCart = catchAsync(async (req, res) => {
+  console.log("i am here", req.user)
+  const result = await cartServices.getCartFromDB(req.user);
+  sendResponse(res, {
+    statusCode: status.OK,
+    success: true,
+    message: "Cart fetched successfully",
+    data: result,
+  });
+});
+
 const addToCart = catchAsync(async (req, res) => {
   const result = await cartServices.addToCartInDB(req.body);
   sendResponse(res, {
@@ -33,6 +44,7 @@ const clearCart = catchAsync(async (req, res) => {
 });
 
 export const cartControllers = {
+  getCart,
   addToCart,
   removeItemFromCart,
   clearCart,

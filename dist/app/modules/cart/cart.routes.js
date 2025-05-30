@@ -16,4 +16,5 @@ router.post("/add", (0, authGurd_1.default)(client_1.UserRole.CUSTOMER),
 cart_controllers_1.cartControllers.addToCart);
 router.delete("/remove/:id", (0, authGurd_1.default)(client_1.UserRole.CUSTOMER), cart_controllers_1.cartControllers.removeItemFromCart);
 router.delete("/remove-cart/:id", (0, authGurd_1.default)(client_1.UserRole.CUSTOMER), cart_controllers_1.cartControllers.clearCart);
+router.get("/", (0, authGurd_1.default)(client_1.UserRole.CUSTOMER), cart_controllers_1.cartControllers.getCart);
 exports.cartRoutes = router;

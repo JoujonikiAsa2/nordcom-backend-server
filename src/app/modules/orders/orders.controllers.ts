@@ -3,6 +3,8 @@ import status from "http-status";
 import config from "../../../config";
 import sendResponse from "../../shared/sendResponse";
 import { orderServices } from "./orders.services";
+import { Response } from "express";
+import { JwtPayload } from "jsonwebtoken";
 
 const createOrder = catchAsync(async (req, res) => {
   const result = await orderServices.createOrderInDB(req.user.email);
@@ -13,6 +15,7 @@ const createOrder = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
 const getAllOrders = catchAsync(async (req, res) => {
   const result = await orderServices.getAllOrdersFromDB();
   sendResponse(res, {
@@ -22,6 +25,7 @@ const getAllOrders = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
 const changeOrderStatus = catchAsync(async (req, res) => {
   const result = await orderServices.changeOrderStatusInDB(
     req.params.id,
@@ -35,8 +39,20 @@ const changeOrderStatus = catchAsync(async (req, res) => {
   });
 });
 
+const getMyOrders = catchAsync(async (req, res: Response & {user?: JwtPayload}) => {
+  const user = req.user
+  const result = await orderServices.getMyOrdersFromDB(user);
+  sendResponse(res, {
+    statusCode: status.OK,
+    success: true,
+    message: "My Orders Fetched Successfully",
+    data: result,
+  });
+})
+
 export const orderControllers = {
   createOrder,
   getAllOrders,
   changeOrderStatus,
+  getMyOrders
 };

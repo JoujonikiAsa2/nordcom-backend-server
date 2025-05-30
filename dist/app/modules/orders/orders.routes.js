@@ -11,9 +11,10 @@ const orders_controllers_1 = require("./orders.controllers");
 const authGurd_1 = __importDefault(require("../../middleware/authGurd"));
 const client_1 = require("@prisma/client");
 const router = express_1.default.Router();
-router.post("/create", (0, authGurd_1.default)(client_1.UserRole.CUSTOMER), 
+router.post("/create", (0, authGurd_1.default)(client_1.UserRole.CUSTOMER, client_1.UserRole.ADMIN), 
 // validateRequest(orderSchemas.createOrderSchema),
 orders_controllers_1.orderControllers.createOrder);
 router.get("/", (0, authGurd_1.default)(client_1.UserRole.ADMIN), orders_controllers_1.orderControllers.getAllOrders);
 router.patch("/status/:id", (0, authGurd_1.default)(client_1.UserRole.ADMIN), orders_controllers_1.orderControllers.changeOrderStatus);
+router.get("/my-orders", (0, authGurd_1.default)(client_1.UserRole.CUSTOMER, client_1.UserRole.ADMIN), orders_controllers_1.orderControllers.getMyOrders);
 exports.OrderRoutes = router;
