@@ -24,5 +24,6 @@ router.delete(
   AuthGurd(UserRole.CUSTOMER),
   cartControllers.clearCart
 );
+router.get("/", AuthGurd(UserRole.CUSTOMER), cartControllers.getCart);
 
 export const cartRoutes = router;

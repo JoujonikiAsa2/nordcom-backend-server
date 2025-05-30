@@ -1,6 +1,45 @@
 import ApiError from "../../errors/ApiError";
 import status from "http-status";
 import prisma from "../../shared/prisma";
+import { JwtPayload } from "jsonwebtoken";
+
+const getCartFromDB = async (user: JwtPayload) => {
+  const { role, email } = user;
+  const isUserExists = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  if (!isUserExists) throw new ApiError(status.NOT_FOUND, "User Not Found.");
+  const userId = isUserExists.id;
+
+  const data = await prisma.cart.findFirst({
+    where: {
+      userId: isUserExists.id,
+    },
+
+    include: {
+      items: {
+        include: {
+          product: true,
+        },
+      },
+      user: true,
+    },
+  });
+  console.log(data);
+
+  const subtotal = data?.items?.reduce((sum, item) => {
+    return sum + item.product.price * item.quantity;
+  }, 0);
+
+  if (!data === null) {
+    throw new ApiError(status.NOT_FOUND, "Cart not found.");
+  }
+
+  return { data, subtotal};
+};
 
 // new branch created
 const addToCartInDB = async (payload: any) => {
@@ -37,6 +76,8 @@ const addToCartInDB = async (payload: any) => {
         quantity: item.quantity,
       },
     });
+
+    console.log(addToCartItemsTable);
     if (!addToCartTable || !addToCartItemsTable) {
       throw new ApiError(
         status.INTERNAL_SERVER_ERROR,
@@ -144,6 +185,7 @@ const clearCartFromDB = async (cartId: string) => {
 };
 
 export const cartServices = {
+  getCartFromDB,
   addToCartInDB,
   removeItemFromCartInDB,
   clearCartFromDB,
