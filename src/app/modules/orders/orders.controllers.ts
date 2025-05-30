@@ -50,9 +50,22 @@ const getMyOrders = catchAsync(async (req, res: Response & {user?: JwtPayload}) 
   });
 })
 
+const getOrderById = catchAsync(async (req, res: Response & {user?: JwtPayload}) => {
+  const id = req.params.id
+  const user = req.user
+  const result = await orderServices.getOrderById(id, user);
+  sendResponse(res, {
+    statusCode: status.OK,
+    success: true,
+    message: "Order Fetched Successfully",
+    data: result,
+  });
+})
+
 export const orderControllers = {
   createOrder,
   getAllOrders,
   changeOrderStatus,
-  getMyOrders
+  getMyOrders,
+  getOrderById
 };

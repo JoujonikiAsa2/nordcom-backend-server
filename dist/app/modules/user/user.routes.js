@@ -15,8 +15,9 @@ const cloudinaryUpload_1 = require("../../../helpers/cloudinaryUpload");
 const router = express_1.default.Router();
 // Create user
 router.post("/register", (0, validateRequest_1.default)(user_zodvalidations_1.UserSchemas.userCreationSchema), user_controllers_1.UserControllers.registerUser);
-// Get user profile BY id
-router.get("/profile/:id", (0, authGurd_1.default)(client_1.UserRole.CUSTOMER, client_1.UserRole.ADMIN), user_controllers_1.UserControllers.getUserProfile);
 //update user
 router.patch("/update", (0, authGurd_1.default)(client_1.UserRole.CUSTOMER, client_1.UserRole.ADMIN), UploadImage_1.UploadImageInServer.single("file"), cloudinaryUpload_1.UploadToCloudinary, (0, validateRequest_1.default)(user_zodvalidations_1.UserSchemas.updateSchema), user_controllers_1.UserControllers.updateUser);
+router.get("/my-profile", (0, authGurd_1.default)(client_1.UserRole.CUSTOMER, client_1.UserRole.ADMIN), user_controllers_1.UserControllers.getUserProfile);
+// Get user profile BY id
+router.get("/:id", (0, authGurd_1.default)(client_1.UserRole.ADMIN), user_controllers_1.UserControllers.getUserById);
 exports.UserRoutes = router;

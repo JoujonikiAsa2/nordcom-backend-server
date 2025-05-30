@@ -7,7 +7,7 @@ exports.UserRoleEnum = zod_1.z.enum([client_1.UserRole.CUSTOMER, client_1.UserRo
 exports.paymentCreationSchema = zod_1.z.object({
     orderId: zod_1.z.string().optional(),
     amount: zod_1.z.number().optional(),
-    method: zod_1.z.string(),
+    method: zod_1.z.string().optional(),
     transactionId: zod_1.z.string().optional(),
     satus: zod_1.z.enum([
         client_1.PaymentStatus.UNPAID,

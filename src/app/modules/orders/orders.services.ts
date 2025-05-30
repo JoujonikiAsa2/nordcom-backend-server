@@ -189,9 +189,31 @@ const getMyOrdersFromDB = async (user: JwtPayload) => {
   return result;
 };
 
+const getOrderById = async (id: string, user: JwtPayload) => {
+  const isUserExists = await prisma.user.findFirst({
+    where: { email: user?.email },
+  });
+  if (!isUserExists) throw new ApiError(status.NOT_FOUND, "User Not Found.");
+  const orderInfo = await prisma.order.findFirst({
+    where: {
+      id,
+      userId: isUserExists?.id,
+    },
+    include: {
+      orderItems: true,
+      Payment: true,
+      user: true,
+    },
+  });
+
+  console.log(orderInfo);
+  return orderInfo;
+};
+
 export const orderServices = {
   createOrderInDB,
   getAllOrdersFromDB,
   changeOrderStatusInDB,
   getMyOrdersFromDB,
+  getOrderById,
 };

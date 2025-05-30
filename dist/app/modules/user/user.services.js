@@ -21,12 +21,13 @@ const client_1 = require("@prisma/client");
 const registerUserIntoDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, password } = payload;
     // Check if user already exists
-    const user = yield prisma_1.default.user.findUniqueOrThrow({
+    const user = yield prisma_1.default.user.findUnique({
         where: {
             email,
         },
     });
-    // if (user) throw new ApiError(status.CONFLICT, "User Already Exists.");
+    if (user)
+        throw new ApiError_1.default(http_status_1.default.CONFLICT, "User Already Exists.");
     // Hash password
     const hashedPassword = bcrypt_1.default.hashSync(password, 10);
     const userData = {
@@ -73,22 +74,36 @@ const updateUserInDB = (user, payload) => __awaiter(void 0, void 0, void 0, func
     });
     return updatedUser;
 });
-const getUserProfile = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield prisma_1.default.user.findUnique({
+const getUserById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const userInfo = yield prisma_1.default.user.findUnique({
         where: {
             id,
+        },
+        include: {
+            User_Extension: true,
+        },
+    });
+    if (!userInfo)
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "User Not Found.");
+    return userInfo;
+});
+const getUserProfile = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    const userInfo = yield prisma_1.default.user.findFirst({
+        where: {
+            email: user === null || user === void 0 ? void 0 : user.email,
             status: client_1.UserStatus.ACTIVE,
         },
         include: {
             User_Extension: true,
         },
     });
-    if (!user)
+    if (!userInfo)
         throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "User Not Found.");
-    return user;
+    return userInfo;
 });
 exports.UserServices = {
     registerUserIntoDB,
     updateUserInDB,
+    getUserById,
     getUserProfile,
 };

@@ -17,5 +17,6 @@ router.post(
 router.get("/", AuthGurd(UserRole.ADMIN), orderControllers.getAllOrders);
 router.patch("/status/:id", AuthGurd(UserRole.ADMIN), orderControllers.changeOrderStatus);
 router.get("/my-orders", AuthGurd(UserRole.CUSTOMER, UserRole.ADMIN), orderControllers.getMyOrders);
+router.get("/:id", AuthGurd(UserRole.CUSTOMER, UserRole.ADMIN), orderControllers.getOrderById);
 
 export const OrderRoutes = router;

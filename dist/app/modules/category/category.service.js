@@ -21,8 +21,8 @@ const GetCategorysFromDB = () => __awaiter(void 0, void 0, void 0, function* () 
         include: {
             Products: true,
             children: true,
-            parent: true
-        }
+            parent: true,
+        },
     });
     if (category.length === 0) {
         throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No Category Available");
@@ -33,6 +33,14 @@ const GetCategoryByIdFromDB = (id) => __awaiter(void 0, void 0, void 0, function
     const uniqueCategory = yield prisma_1.default.category.findUnique({
         where: {
             id,
+        },
+        include: {
+            Products: true,
+            children: {
+                include: {
+                    Products: true,
+                },
+            }
         },
     });
     if (uniqueCategory === null) {

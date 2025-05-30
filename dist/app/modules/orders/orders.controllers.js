@@ -44,8 +44,31 @@ const changeOrderStatus = (0, catchAsync_1.default)((req, res) => __awaiter(void
         data: result,
     });
 }));
+const getMyOrders = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const result = yield orders_services_1.orderServices.getMyOrdersFromDB(user);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "My Orders Fetched Successfully",
+        data: result,
+    });
+}));
+const getOrderById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.params.id;
+    const user = req.user;
+    const result = yield orders_services_1.orderServices.getOrderById(id, user);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Order Fetched Successfully",
+        data: result,
+    });
+}));
 exports.orderControllers = {
     createOrder,
     getAllOrders,
     changeOrderStatus,
+    getMyOrders,
+    getOrderById
 };

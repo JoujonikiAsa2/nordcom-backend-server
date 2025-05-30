@@ -43,14 +43,20 @@ const getCartFromDB = async (user: JwtPayload) => {
 
 // new branch created
 const addToCartInDB = async (payload: any) => {
-  const { userId, item } = payload;
-
-  if (!userId) throw new ApiError(status.BAD_REQUEST, "User ID is required.");
+  const { email, item } = payload;
+  console.log(item, email)
+  const isUserExists = await prisma.user.findFirst({
+    where:{
+      email
+    }
+  })
+  if (!isUserExists) throw new ApiError(status.BAD_REQUEST, "User ID is required.");
   if (!item) throw new ApiError(status.BAD_REQUEST, "Items are required.");
+
   // Check cart already exists for the user
   const existingCart = await prisma.cart.findFirst({
     where: {
-      userId,
+      userId: isUserExists?.id,
     },
   });
 
@@ -64,7 +70,7 @@ const addToCartInDB = async (payload: any) => {
     }
     const addToCartTable = await prisma.cart.create({
       data: {
-        userId,
+        userId: isUserExists?.id,
       },
     });
     // check if quantity is negative
@@ -95,7 +101,7 @@ const addToCartInDB = async (payload: any) => {
     });
     if (existingItem) {
       // if item exists, update the quantity
-      const udpatedQuantity = existingItem.quantity + item.quantity;
+      const udpatedQuantity = item.quantity;
       const updatedCartItem = await prisma.cartItem.update({
         where: {
           id: existingItem.id,
@@ -128,6 +134,8 @@ const addToCartInDB = async (payload: any) => {
           quantity: item.quantity,
         },
       });
+
+      console.log(addToCartItemsTable)
       if (!addToCartItemsTable) {
         throw new ApiError(
           status.INTERNAL_SERVER_ERROR,

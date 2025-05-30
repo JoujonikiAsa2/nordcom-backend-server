@@ -1,5 +1,4 @@
 import express from "express";
-import { UserRoutes } from "../modules/user/user.routes";
 import { AuthRoutes } from "../modules/auth/auth.routes";
 import { AdminMangementRoutes } from "../modules/adminManagement/adminManagement.routes";
 import { BrandRoutes } from "../modules/brand/brand.route";
@@ -11,6 +10,8 @@ import { FavoriteProductRoutes } from "../modules/favoriteProduct/favoriteProduc
 import { NewsletterRoutes } from "../modules/newsletter/newsletter.route";
 import { OrderRoutes } from "../modules/orders/orders.routes";
 import { cartRoutes } from "../modules/cart/cart.routes";
+import { CouponRoutes } from "../modules/coupon/coupon.route";
+import { UserRoutes } from "../modules/user/user.routes";
 
 
 const router = express.Router();
@@ -65,6 +66,10 @@ const moduleRoutes = [
     path: "/newsletter",
     route: NewsletterRoutes,
   },
+  {
+    path: "/coupon",
+    route: CouponRoutes
+  }
 ];
 
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

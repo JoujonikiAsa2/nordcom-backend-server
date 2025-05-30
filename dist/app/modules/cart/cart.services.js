@@ -16,17 +16,56 @@ exports.cartServices = void 0;
 const ApiError_1 = __importDefault(require("../../errors/ApiError"));
 const http_status_1 = __importDefault(require("http-status"));
 const prisma_1 = __importDefault(require("../../shared/prisma"));
+const getCartFromDB = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const { role, email } = user;
+    const isUserExists = yield prisma_1.default.user.findUnique({
+        where: {
+            email,
+        },
+    });
+    if (!isUserExists)
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "User Not Found.");
+    const userId = isUserExists.id;
+    const data = yield prisma_1.default.cart.findFirst({
+        where: {
+            userId: isUserExists.id,
+        },
+        include: {
+            items: {
+                include: {
+                    product: true,
+                },
+            },
+            user: true,
+        },
+    });
+    console.log(data);
+    const subtotal = (_a = data === null || data === void 0 ? void 0 : data.items) === null || _a === void 0 ? void 0 : _a.reduce((sum, item) => {
+        return sum + item.product.price * item.quantity;
+    }, 0);
+    if (!data === null) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "Cart not found.");
+    }
+    return { data, subtotal };
+});
 // new branch created
 const addToCartInDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId, item } = payload;
-    if (!userId)
+    const { email, item } = payload;
+    console.log(item, email);
+    const isUserExists = yield prisma_1.default.user.findFirst({
+        where: {
+            email
+        }
+    });
+    if (!isUserExists)
         throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "User ID is required.");
     if (!item)
         throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Items are required.");
     // Check cart already exists for the user
     const existingCart = yield prisma_1.default.cart.findFirst({
         where: {
-            userId,
+            userId: isUserExists === null || isUserExists === void 0 ? void 0 : isUserExists.id,
         },
     });
     if (!existingCart) {
@@ -36,7 +75,7 @@ const addToCartInDB = (payload) => __awaiter(void 0, void 0, void 0, function* (
         }
         const addToCartTable = yield prisma_1.default.cart.create({
             data: {
-                userId,
+                userId: isUserExists === null || isUserExists === void 0 ? void 0 : isUserExists.id,
             },
         });
         // check if quantity is negative
@@ -48,6 +87,7 @@ const addToCartInDB = (payload) => __awaiter(void 0, void 0, void 0, function* (
                 quantity: item.quantity,
             },
         });
+        console.log(addToCartItemsTable);
         if (!addToCartTable || !addToCartItemsTable) {
             throw new ApiError_1.default(http_status_1.default.INTERNAL_SERVER_ERROR, "Failed to add to cart.");
         }
@@ -63,7 +103,7 @@ const addToCartInDB = (payload) => __awaiter(void 0, void 0, void 0, function* (
         });
         if (existingItem) {
             // if item exists, update the quantity
-            const udpatedQuantity = existingItem.quantity + item.quantity;
+            const udpatedQuantity = item.quantity;
             const updatedCartItem = yield prisma_1.default.cartItem.update({
                 where: {
                     id: existingItem.id,
@@ -91,6 +131,7 @@ const addToCartInDB = (payload) => __awaiter(void 0, void 0, void 0, function* (
                     quantity: item.quantity,
                 },
             });
+            console.log(addToCartItemsTable);
             if (!addToCartItemsTable) {
                 throw new ApiError_1.default(http_status_1.default.INTERNAL_SERVER_ERROR, "Failed to add item to cart.");
             }
@@ -133,6 +174,7 @@ const clearCartFromDB = (cartId) => __awaiter(void 0, void 0, void 0, function* 
     return "Cart cleared successfully.";
 });
 exports.cartServices = {
+    getCartFromDB,
     addToCartInDB,
     removeItemFromCartInDB,
     clearCartFromDB,

@@ -38,11 +38,15 @@ const CreateChechoutSession = (payload) => __awaiter(void 0, void 0, void 0, fun
     return { clientSecret: paymentIntent.client_secret };
 });
 const CreatePaymentInDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const userInfo = yield prisma_1.default.user.findUnique({
+    console.log({ payload });
+    const userInfo = yield prisma_1.default.user.findFirst({
         where: { email: payload === null || payload === void 0 ? void 0 : payload.email },
     });
     if (!userInfo) {
         throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "User does not exist");
+    }
+    if (!payload.orderId) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Order ID is required");
     }
     const orderInfo = yield prisma_1.default.order.findUnique({
         where: { id: payload === null || payload === void 0 ? void 0 : payload.orderId },
@@ -92,12 +96,16 @@ const CreatePaymentInDB = (payload) => __awaiter(void 0, void 0, void 0, functio
                 method: (_a = payload.method) !== null && _a !== void 0 ? _a : "card",
             },
         });
-        const payment = null;
-        if (!payment) {
-            yield prisma_1.default.order.delete({
+        if (!paymentInfo) {
+            yield prisma_1.default.orderItem.deleteMany({
+                where: {
+                    orderId: orderInfo.id,
+                },
+            });
+            yield prisma_1.default.order.deleteMany({
                 where: {
                     id: orderInfo.id,
-                }
+                },
             });
             for (const item of orderedItems) {
                 yield prisma_1.default.product.update({

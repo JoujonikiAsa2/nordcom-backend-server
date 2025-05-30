@@ -32,12 +32,17 @@ const CreateChechoutSession = async (payload: {
 };
 
 const CreatePaymentInDB = async (payload: TPayment & { email: string }) => {
-  const userInfo = await prisma.user.findUnique({
+  console.log({payload});
+  const userInfo = await prisma.user.findFirst({
     where: { email: payload?.email },
   });
 
   if (!userInfo) {
     throw new ApiError(status.NOT_FOUND, "User does not exist");
+  }
+
+  if (!payload.orderId) {
+    throw new ApiError(status.BAD_REQUEST, "Order ID is required");
   }
 
   const orderInfo = await prisma.order.findUnique({
@@ -94,12 +99,16 @@ const CreatePaymentInDB = async (payload: TPayment & { email: string }) => {
       },
     });
 
-    const payment = null;
-    if (!payment) {
-      await prisma.order.delete({
+    if (!paymentInfo) {
+      await prisma.orderItem.deleteMany({
+        where: {
+          orderId: orderInfo.id,
+        },
+      });
+      await prisma.order.deleteMany({
         where: {
           id: orderInfo.id,
-        }
+        },
       });
 
       for (const item of orderedItems) {

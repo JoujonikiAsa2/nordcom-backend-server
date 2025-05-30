@@ -6,7 +6,7 @@ export const UserRoleEnum = z.enum([UserRole.CUSTOMER, UserRole.ADMIN]);
 export const paymentCreationSchema = z.object({
   orderId: z.string().optional(),
   amount: z.number().optional(),
-  method: z.string(),
+  method: z.string().optional(),
   transactionId: z.string().optional(),
   satus: z.enum([
     PaymentStatus.UNPAID,

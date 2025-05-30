@@ -17,6 +17,16 @@ const catchAsync_1 = __importDefault(require("../../shared/catchAsync"));
 const http_status_1 = __importDefault(require("http-status"));
 const sendResponse_1 = __importDefault(require("../../shared/sendResponse"));
 const cart_services_1 = require("./cart.services");
+const getCart = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("i am here", req.user);
+    const result = yield cart_services_1.cartServices.getCartFromDB(req.user);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Cart fetched successfully",
+        data: result,
+    });
+}));
 const addToCart = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield cart_services_1.cartServices.addToCartInDB(req.body);
     (0, sendResponse_1.default)(res, {
@@ -45,6 +55,7 @@ const clearCart = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void
     });
 }));
 exports.cartControllers = {
+    getCart,
     addToCart,
     removeItemFromCart,
     clearCart,

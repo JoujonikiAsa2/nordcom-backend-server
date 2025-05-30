@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const user_routes_1 = require("../modules/user/user.routes");
 const auth_routes_1 = require("../modules/auth/auth.routes");
 const adminManagement_routes_1 = require("../modules/adminManagement/adminManagement.routes");
 const brand_route_1 = require("../modules/brand/brand.route");
@@ -16,6 +15,8 @@ const favoriteProduct_route_1 = require("../modules/favoriteProduct/favoriteProd
 const newsletter_route_1 = require("../modules/newsletter/newsletter.route");
 const orders_routes_1 = require("../modules/orders/orders.routes");
 const cart_routes_1 = require("../modules/cart/cart.routes");
+const coupon_route_1 = require("../modules/coupon/coupon.route");
+const user_routes_1 = require("../modules/user/user.routes");
 const router = express_1.default.Router();
 const moduleRoutes = [
     {
@@ -66,6 +67,10 @@ const moduleRoutes = [
         path: "/newsletter",
         route: newsletter_route_1.NewsletterRoutes,
     },
+    {
+        path: "/coupon",
+        route: coupon_route_1.CouponRoutes
+    }
 ];
 moduleRoutes.forEach((route) => router.use(route.path, route.route));
 exports.default = router;

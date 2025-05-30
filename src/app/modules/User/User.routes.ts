@@ -16,13 +16,6 @@ router.post(
   UserControllers.registerUser
 );
 
-// Get user profile BY id
-router.get(
-  "/profile/:id",
-  AuthGurd(UserRole.CUSTOMER, UserRole.ADMIN),
-  UserControllers.getUserProfile
-);
-
 //update user
 router.patch(
   "/update",
@@ -31,6 +24,20 @@ router.patch(
   UploadToCloudinary,
   validateRequest(UserSchemas.updateSchema),
   UserControllers.updateUser
+);
+
+router.get(
+  "/my-profile",
+  AuthGurd(UserRole.CUSTOMER, UserRole.ADMIN),
+  UserControllers.getUserProfile
+);
+
+
+// Get user profile BY id
+router.get(
+  "/:id",
+  AuthGurd( UserRole.ADMIN),
+  UserControllers.getUserById
 );
 
 export const UserRoutes = router;

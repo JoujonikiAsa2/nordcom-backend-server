@@ -140,8 +140,48 @@ const changeOrderStatusInDB = (id, status) => __awaiter(void 0, void 0, void 0, 
         throw new ApiError_1.default(http_status_2.default.INTERNAL_SERVER_ERROR, "Failed to update order status.");
     return { updatedOrder };
 });
+const getMyOrdersFromDB = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    const isUserExists = yield prisma_1.default.user.findFirst({
+        where: { email: user === null || user === void 0 ? void 0 : user.email },
+    });
+    if (!isUserExists)
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "User Not Found.");
+    const result = yield prisma_1.default.order.findMany({
+        where: {
+            userId: isUserExists === null || isUserExists === void 0 ? void 0 : isUserExists.id,
+        },
+        include: {
+            orderItems: true,
+            Payment: true,
+            user: true,
+        },
+    });
+    return result;
+});
+const getOrderById = (id, user) => __awaiter(void 0, void 0, void 0, function* () {
+    const isUserExists = yield prisma_1.default.user.findFirst({
+        where: { email: user === null || user === void 0 ? void 0 : user.email },
+    });
+    if (!isUserExists)
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "User Not Found.");
+    const orderInfo = yield prisma_1.default.order.findFirst({
+        where: {
+            id,
+            userId: isUserExists === null || isUserExists === void 0 ? void 0 : isUserExists.id,
+        },
+        include: {
+            orderItems: true,
+            Payment: true,
+            user: true,
+        },
+    });
+    console.log(orderInfo);
+    return orderInfo;
+});
 exports.orderServices = {
     createOrderInDB,
     getAllOrdersFromDB,
     changeOrderStatusInDB,
+    getMyOrdersFromDB,
+    getOrderById,
 };
