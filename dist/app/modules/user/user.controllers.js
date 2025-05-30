@@ -16,10 +16,9 @@ exports.UserControllers = void 0;
 const http_status_1 = __importDefault(require("http-status"));
 const catchAsync_1 = __importDefault(require("../../shared/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../shared/sendResponse"));
-const User_services_1 = require("./User.services");
-// import { UserServices } from "./user.services";
+const user_services_1 = require("./user.services");
 const registerUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield User_services_1.UserServices.registerUserIntoDB(req.body);
+    const result = yield user_services_1.UserServices.registerUserIntoDB(req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.CREATED,
         success: true,
@@ -28,7 +27,7 @@ const registerUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     });
 }));
 const updateUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield User_services_1.UserServices.updateUserInDB(req.user, req.body);
+    const result = yield user_services_1.UserServices.updateUserInDB(req.user, req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -37,7 +36,7 @@ const updateUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
     });
 }));
 const getUserProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield User_services_1.UserServices.getUserProfile(req.params.id);
+    const result = yield user_services_1.UserServices.getUserProfile(req.params.id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
