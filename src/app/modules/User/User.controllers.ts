@@ -1,7 +1,7 @@
 import status from "http-status";
 import catchAsync from "../../shared/catchAsync";
 import sendResponse from "../../shared/sendResponse";
-import { UserServices } from "./user.services";
+import { UserServices } from "./User.services";
 import { Response } from "express";
 import { JwtPayload } from "jsonwebtoken";
 

@@ -3,7 +3,7 @@ import express from "express";
 import AuthGurd from "../../middleware/authGurd";
 import { UploadImageInServer } from "../../middleware/UploadImage";
 import validateRequest from "../../middleware/validateRequest";
-import { UserControllers } from "./user.controllers";
+import { UserControllers } from "./User.controllers";
 import { UserSchemas } from "./user.zodvalidations";
 import { UploadToCloudinary } from "../../../helpers/cloudinaryUpload";
 

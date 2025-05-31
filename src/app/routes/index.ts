@@ -11,7 +11,8 @@ import { NewsletterRoutes } from "../modules/newsletter/newsletter.route";
 import { OrderRoutes } from "../modules/orders/orders.routes";
 import { cartRoutes } from "../modules/cart/cart.routes";
 import { CouponRoutes } from "../modules/coupon/coupon.route";
-import { UserRoutes } from "../modules/user/user.routes";
+import { UserRoutes } from "../modules/user/User.routes";
+// import { UserRoutes } from "../modules/User/user.routes";
 
 
 const router = express.Router();

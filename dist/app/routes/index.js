@@ -16,7 +16,8 @@ const newsletter_route_1 = require("../modules/newsletter/newsletter.route");
 const orders_routes_1 = require("../modules/orders/orders.routes");
 const cart_routes_1 = require("../modules/cart/cart.routes");
 const coupon_route_1 = require("../modules/coupon/coupon.route");
-const user_routes_1 = require("../modules/user/user.routes");
+const User_routes_1 = require("../modules/user/User.routes");
+// import { UserRoutes } from "../modules/User/user.routes";
 const router = express_1.default.Router();
 const moduleRoutes = [
     {
@@ -25,7 +26,7 @@ const moduleRoutes = [
     },
     {
         path: "/user",
-        route: user_routes_1.UserRoutes,
+        route: User_routes_1.UserRoutes,
     },
     {
         path: "/admin",
