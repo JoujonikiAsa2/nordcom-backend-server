@@ -1,3 +1,4 @@
+import { forgotPasswordEmailText } from "./../../../helpers/sendMailText";
 import bcrypt from "bcrypt";
 import status from "http-status";
 import { JwtPayload } from "jsonwebtoken";
@@ -87,9 +88,75 @@ const getUserProfile = async (id: string) => {
   if (!user) throw new ApiError(status.NOT_FOUND, "User Not Found.");
   return user;
 };
+const getAdminProfile = async (email: string) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+    select: {
+      email: true,
+      name: true,
+      User_Extension: {
+        select: {
+          phone: true,
+          address: true,
+          country: true,
+          postalCode: true,
+          bio: true,
+          imageUrl: true,
+        },
+      },
+    },
+  });
+  if (!user) throw new ApiError(status.NOT_FOUND, "User Not Found.");
+  return {
+    name: user.name,
+    email: user.email,
+    phone: user?.User_Extension?.phone,
+    address: user?.User_Extension?.address,
+    country: user?.User_Extension?.country,
+    postalCode: user?.User_Extension?.postalCode,
+    bio: user?.User_Extension?.bio,
+    imageUrl: user?.User_Extension?.imageUrl,
+  };
+};
+const getAllUsersFromDB = async (id: string) => {
+  const user = await prisma.user.findMany({
+    select: {
+      id: true,
+      name: true,
+      role: true,
+      email: true,
+      status: true,
+      createdAt: true,
+      updatedAt: true,
+      User_Extension: {
+        select: {
+          phone: true,
+          address: true,
+          country: true,
+          imageUrl: true,
+        },
+      },
+    },
+  });
+  const modifiedUsers = user.map((user) => {
+    return {
+      ...user,
+
+      phone: user?.User_Extension?.phone,
+      address: user?.User_Extension?.address,
+      country: user?.User_Extension?.country,
+      imageUrl: user?.User_Extension?.imageUrl,
+    };
+  });
+  return modifiedUsers ? modifiedUsers : [];
+};
 
 export const UserServices = {
   registerUserIntoDB,
   updateUserInDB,
   getUserProfile,
+  getAllUsersFromDB,
+  getAdminProfile,
 };

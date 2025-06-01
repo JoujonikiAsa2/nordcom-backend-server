@@ -12,7 +12,7 @@ export const UploadToCloudinary: RequestHandler = async function (
   res,
   next
 ) {
-  // console.log({ body: req.body, file: req.file });
+  console.log({ body: req.body, file: req.file });
   const buffer = req.file?.buffer!;
   // console.log("req body 1", buffer);
 

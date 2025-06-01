@@ -12,7 +12,7 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
       message += `${issue.path[0]} ${issue.message} `;
     });
   }
-  console.log("hallo", { message, error });
+  console.log( { message, error });
   res.status(statusCode).json({
     success: false,
     message: message || "Something went wrong",

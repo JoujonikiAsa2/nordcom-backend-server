@@ -23,6 +23,7 @@ const getAllOrders = catchAsync(async (req, res) => {
   });
 });
 const changeOrderStatus = catchAsync(async (req, res) => {
+  console.log("staatus", req.body);
   const result = await orderServices.changeOrderStatusInDB(
     req.params.id,
     req.body.status

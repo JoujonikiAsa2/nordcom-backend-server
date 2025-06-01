@@ -31,7 +31,28 @@ const getUserProfile = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: status.OK,
     success: true,
-    message: "User Updated Successfully.",
+    message: "User fetched Successfully.",
+    data: result,
+  });
+});
+
+const getAdminProfille = catchAsync(async (req, res) => {
+  const result = await UserServices.getAdminProfile(req.user.email);
+
+  sendResponse(res, {
+    statusCode: status.OK,
+    success: true,
+    message: "Admin fetched Successfully.",
+    data: result,
+  });
+});
+const getAllUsers = catchAsync(async (req, res) => {
+  const result = await UserServices.getAllUsersFromDB(req.params.id);
+
+  sendResponse(res, {
+    statusCode: status.OK,
+    success: true,
+    message: "Users fetched Successfully.",
     data: result,
   });
 });
@@ -40,4 +61,6 @@ export const UserControllers = {
   registerUser,
   updateUser,
   getUserProfile,
+  getAllUsers,
+  getAdminProfille,
 };

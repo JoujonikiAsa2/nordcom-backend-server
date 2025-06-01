@@ -1,8 +1,34 @@
 import ApiError from "../../errors/ApiError";
 import status from "http-status";
 import prisma from "../../shared/prisma";
+import { JwtPayload } from "jsonwebtoken";
+import { UserRole } from "@prisma/client";
 
-// new branch created
+const getCartFromDB = async (user: JwtPayload) => {
+  const { role, email } = user;
+  let result;
+  const isUserExists = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  if (!isUserExists) throw new ApiError(status.NOT_FOUND, "User Not Found.");
+  const userId = isUserExists.id;
+
+  result = await prisma.cart.findMany({
+    where: {
+      userId: isUserExists.id,
+    },
+  });
+
+  if (!result || result.length === 0) {
+    throw new ApiError(status.NOT_FOUND, "Cart not found.");
+  }
+
+  return result;
+};
+
 const addToCartInDB = async (payload: any) => {
   const { userId, item } = payload;
 
@@ -147,4 +173,5 @@ export const cartServices = {
   addToCartInDB,
   removeItemFromCartInDB,
   clearCartFromDB,
+  getCartFromDB,
 };

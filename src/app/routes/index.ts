@@ -20,6 +20,18 @@ const moduleRoutes = [
     route: UserRoutes,
   },
   {
+    path: "/brand",
+    route: BrandRoutes,
+  },
+  {
+    path: "/product",
+    route: ProductRoutes,
+  },
+  {
+    path: "/category",
+    route: CategoryRoutes,
+  },
+  {
     path: "/admin",
     route: AdminMangementRoutes,
   },
@@ -31,18 +43,6 @@ const moduleRoutes = [
   {
     path: "/order",
     route: OrderRoutes,
-  },
-  {
-    path: "/brand",
-    route: BrandRoutes,
-  },
-  {
-    path: "/category",
-    route: CategoryRoutes,
-  },
-  {
-    path: "/product",
-    route: ProductRoutes,
   },
 ];
 

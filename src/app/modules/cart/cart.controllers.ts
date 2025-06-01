@@ -13,6 +13,15 @@ const addToCart = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getCart = catchAsync(async (req, res) => {
+  const result = await cartServices.getCartFromDB(req.user);
+  sendResponse(res, {
+    statusCode: status.OK,
+    success: true,
+    message: "Cart fetched successfully",
+    data: result,
+  });
+});
 const removeItemFromCart = catchAsync(async (req, res) => {
   const result = await cartServices.removeItemFromCartInDB(req.params.id);
   sendResponse(res, {
@@ -36,4 +45,5 @@ export const cartControllers = {
   addToCart,
   removeItemFromCart,
   clearCart,
+  getCart
 };
