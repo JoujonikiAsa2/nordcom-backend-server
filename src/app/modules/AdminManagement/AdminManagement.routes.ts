@@ -19,41 +19,6 @@ router.get(
   AdminMangementControllers.GetAnalytics
 );
 
-// Total Orders by Status (Pie Chart)
-router.get(
-  "/analytics/order-by-status",
-  AuthGurd(UserRole.ADMIN),
-  AdminMangementControllers.GetOrdersByStatus
-);
-
-// Monthly Sales Revenue (Bar Chart)
-router.get(
-  "/analytics/monthly-sales",
-  AuthGurd(UserRole.ADMIN),
-  AdminMangementControllers.GetMonthlySales
-);
-
-// Top Selling Products (Table or Bar Chart)
-router.get(
-  "/analytics/top-products?limit=5",
-  AuthGurd(UserRole.ADMIN),
-  AdminMangementControllers.GetTopSellingProducts
-);
-
-// Total Revenue by Category (Pie or Bar Chart)
-router.get(
-  "/analytics/sales-by-category",
-  AuthGurd(UserRole.ADMIN),
-  AdminMangementControllers.GetSalesByCategory
-);
-
-// New Users Over Time (Line/Bar Chart)
-router.get(
-  "/analytics/users-growth",
-  AuthGurd(UserRole.ADMIN),
-  AdminMangementControllers.GetUsersGrowth
-);
-
 //update status of user
 router.patch(
   "/:id",
