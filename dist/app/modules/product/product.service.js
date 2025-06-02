@@ -27,21 +27,55 @@ exports.ProductServices = void 0;
 const prisma_1 = __importDefault(require("../../shared/prisma"));
 const ApiError_1 = __importDefault(require("../../errors/ApiError"));
 const http_status_1 = __importDefault(require("http-status"));
-const GetProductsFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
-    const product = yield prisma_1.default.product.findMany({
-        where: {
-            isDeleted: false,
-        },
-        include: {
-            brand: true,
-            category: true,
-            Review: true,
-        },
-    });
-    if (product.length === 0) {
-        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No Product Found");
+const GetProductsFromDB = (viewAllType) => __awaiter(void 0, void 0, void 0, function* () {
+    let select;
+    let Product;
+    if (viewAllType === "admin") {
+        select = {
+            brand: {
+                select: {
+                    name: true,
+                },
+            },
+            brandId: true,
+            categoryId: true,
+            category: {
+                select: {
+                    name: true,
+                },
+            },
+            createdAt: true,
+            id: true,
+            images: true,
+            name: true,
+            price: true,
+            stock: true,
+            sku: true,
+            stockStatus: true,
+            isFeatured: true,
+            discountPrice: true,
+        };
+        Product = yield prisma_1.default.product.findMany({
+            where: {
+                isDeleted: false,
+            },
+            select,
+        });
+        Product = Product === null || Product === void 0 ? void 0 : Product.map((product) => (Object.assign(Object.assign({}, product), { brand: product.brand, category: product.category })));
     }
-    return product;
+    else {
+        Product = yield prisma_1.default.product.findMany({
+            where: {
+                isDeleted: false,
+            },
+            include: {
+                brand: true,
+                category: true,
+                Review: true,
+            },
+        });
+    }
+    return Product;
 });
 const GetProductByIdFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const uniqueProduct = yield prisma_1.default.product.findUnique({
@@ -74,7 +108,7 @@ const CreateProductIntoDB = (payload) => __awaiter(void 0, void 0, void 0, funct
     return result;
 });
 const UpdateProductIntoDB = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const { specification, images, seoInformation, variants } = payload, rest = __rest(payload, ["specification", "images", "seoInformation", "variants"]);
+    const { specification, imageUrl, seoInformation, variants } = payload, rest = __rest(payload, ["specification", "imageUrl", "seoInformation", "variants"]);
     //cheking existing
     const isProductExists = yield prisma_1.default.product.findUnique({
         where: {
@@ -84,18 +118,8 @@ const UpdateProductIntoDB = (id, payload) => __awaiter(void 0, void 0, void 0, f
     if (isProductExists === null) {
         throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No Product Available");
     }
-    //checking other field exist or not
-    if (specification === null ||
-        images === null ||
-        seoInformation === null ||
-        variants === null) {
-        yield prisma_1.default.product.update({
-            where: { id: isProductExists.id },
-            data: rest,
-        });
-    }
-    if (images !== undefined) {
-        const imageArray = [...images, ...isProductExists.images];
+    if (imageUrl !== undefined) {
+        const imageArray = [...isProductExists.images, imageUrl];
         yield prisma_1.default.product.update({
             where: { id: isProductExists.id },
             data: { images: imageArray },
@@ -150,6 +174,10 @@ const UpdateProductIntoDB = (id, payload) => __awaiter(void 0, void 0, void 0, f
             data: { seoInformation: mergedSeoInformation },
         });
     }
+    yield prisma_1.default.product.update({
+        where: { id: isProductExists.id },
+        data: rest,
+    });
     const result = yield prisma_1.default.product.findUnique({
         where: {
             id,

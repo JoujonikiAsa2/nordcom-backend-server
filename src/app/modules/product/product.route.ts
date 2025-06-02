@@ -5,7 +5,7 @@ import { UserRole } from "@prisma/client";
 import { ProductSchemas } from "./product.zodvalidation";
 import { ProductControllers } from "./product.controller";
 import { UploadImageInServer } from "../../middleware/UploadImage";
-import { UploadToCloudinary } from "../../../helpers/cloudinaryUpload";
+import { UploadToCloudinary } from "../../../helpers/CloudinaryUpload";
 
 const router = express.Router();
 

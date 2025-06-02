@@ -16,9 +16,9 @@ exports.AdminMangementControllers = void 0;
 const http_status_1 = __importDefault(require("http-status"));
 const catchAsync_1 = __importDefault(require("../../shared/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../shared/sendResponse"));
-const adminManagement_services_1 = require("./adminManagement.services");
+const AdminManagement_services_1 = require("./AdminManagement.services");
 const ChangeUserStatus = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield adminManagement_services_1.AdminManagementServices.ChangeUserStatusInDB(req.params.id, req.query.status);
+    const result = yield AdminManagement_services_1.AdminManagementServices.ChangeUserStatusInDB(req.params.id, req.query.status);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -27,7 +27,16 @@ const ChangeUserStatus = (0, catchAsync_1.default)((req, res) => __awaiter(void 
     });
 }));
 const GetAllUsers = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield adminManagement_services_1.AdminManagementServices.GetAllUsersFromDB();
+    const result = yield AdminManagement_services_1.AdminManagementServices.GetAllUsersFromDB();
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Users Fetched successfully.",
+        data: result,
+    });
+}));
+const GetAnalytics = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield AdminManagement_services_1.AdminManagementServices.GetAnalyticsFromDB();
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -38,4 +47,5 @@ const GetAllUsers = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
 exports.AdminMangementControllers = {
     GetAllUsers,
     ChangeUserStatus,
+    GetAnalytics,
 };

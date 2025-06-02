@@ -18,7 +18,7 @@ const catchAsync_1 = __importDefault(require("../../shared/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../shared/sendResponse"));
 const product_service_1 = require("./product.service");
 const GetProducts = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield product_service_1.ProductServices.GetProductsFromDB();
+    const result = yield product_service_1.ProductServices.GetProductsFromDB(req.query.admin ? req.query.admin : "");
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,

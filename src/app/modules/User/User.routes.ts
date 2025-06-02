@@ -5,7 +5,7 @@ import { UploadImageInServer } from "../../middleware/UploadImage";
 import validateRequest from "../../middleware/validateRequest";
 import { UserControllers } from "./User.controllers";
 import { UserSchemas } from "./user.zodvalidations";
-import { UploadToCloudinary } from "../../../helpers/cloudinaryUpload";
+import { UploadToCloudinary } from "../../../helpers/CloudinaryUpload";
 
 const router = express.Router();
 
@@ -32,6 +32,14 @@ router.get(
   UserControllers.getUserProfile
 );
 
+router.get(
+  "/admin",
+  AuthGurd(UserRole.ADMIN),
+  UserControllers.getAdminProfille
+);
+
+
+router.get("/", AuthGurd(UserRole.ADMIN), UserControllers.getAllUsers);
 
 // Get user profile BY id
 router.get(

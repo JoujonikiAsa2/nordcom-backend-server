@@ -1,6 +1,6 @@
 import express from "express";
 import { AuthRoutes } from "../modules/auth/auth.routes";
-import { AdminMangementRoutes } from "../modules/adminManagement/adminManagement.routes";
+// import { AdminMangementRoutes } from "../modules/adminManagement/adminManagement.routes";
 import { BrandRoutes } from "../modules/brand/brand.route";
 import { CategoryRoutes } from "../modules/category/category.route";
 import { ProductRoutes } from "../modules/product/product.route";
@@ -12,6 +12,7 @@ import { OrderRoutes } from "../modules/orders/orders.routes";
 import { cartRoutes } from "../modules/cart/cart.routes";
 import { CouponRoutes } from "../modules/coupon/coupon.route";
 import { UserRoutes } from "../modules/user/User.routes";
+import { AdminMangementRoutes } from "../modules/adminManagement/AdminManagement.routes";
 // import { UserRoutes } from "../modules/User/user.routes";
 
 

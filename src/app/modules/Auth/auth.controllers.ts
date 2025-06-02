@@ -13,7 +13,6 @@ const login = catchAsync(async (req, res) => {
     email,
     role: role.toLowerCase(),
   };
-  console.log(tokenData);
   const accessToken = await generateToken(
     tokenData,
     config.jwt.access_token_secret!,
@@ -24,7 +23,6 @@ const login = catchAsync(async (req, res) => {
     config.jwt.refresh_token_secret!,
     "access"
   );
-  console.log(accessToken, refreshToken);
   sendResponse(res, {
     statusCode: status.OK,
     success: true,

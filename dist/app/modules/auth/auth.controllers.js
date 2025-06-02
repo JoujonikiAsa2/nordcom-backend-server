@@ -27,10 +27,8 @@ const login = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, 
         email,
         role: role.toLowerCase(),
     };
-    console.log(tokenData);
     const accessToken = yield (0, jwtHelpers_1.generateToken)(tokenData, config_1.default.jwt.access_token_secret, "access");
     const refreshToken = yield (0, jwtHelpers_1.generateToken)(tokenData, config_1.default.jwt.refresh_token_secret, "access");
-    console.log(accessToken, refreshToken);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,

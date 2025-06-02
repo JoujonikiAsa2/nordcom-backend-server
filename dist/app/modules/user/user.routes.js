@@ -11,13 +11,15 @@ const UploadImage_1 = require("../../middleware/UploadImage");
 const validateRequest_1 = __importDefault(require("../../middleware/validateRequest"));
 const User_controllers_1 = require("./User.controllers");
 const user_zodvalidations_1 = require("./user.zodvalidations");
-const cloudinaryUpload_1 = require("../../../helpers/cloudinaryUpload");
+const CloudinaryUpload_1 = require("../../../helpers/CloudinaryUpload");
 const router = express_1.default.Router();
 // Create user
 router.post("/register", (0, validateRequest_1.default)(user_zodvalidations_1.UserSchemas.userCreationSchema), User_controllers_1.UserControllers.registerUser);
 //update user
-router.patch("/update", (0, authGurd_1.default)(client_1.UserRole.CUSTOMER, client_1.UserRole.ADMIN), UploadImage_1.UploadImageInServer.single("file"), cloudinaryUpload_1.UploadToCloudinary, (0, validateRequest_1.default)(user_zodvalidations_1.UserSchemas.updateSchema), User_controllers_1.UserControllers.updateUser);
+router.patch("/update", (0, authGurd_1.default)(client_1.UserRole.CUSTOMER, client_1.UserRole.ADMIN), UploadImage_1.UploadImageInServer.single("file"), CloudinaryUpload_1.UploadToCloudinary, (0, validateRequest_1.default)(user_zodvalidations_1.UserSchemas.updateSchema), User_controllers_1.UserControllers.updateUser);
 router.get("/my-profile", (0, authGurd_1.default)(client_1.UserRole.CUSTOMER, client_1.UserRole.ADMIN), User_controllers_1.UserControllers.getUserProfile);
+router.get("/admin", (0, authGurd_1.default)(client_1.UserRole.ADMIN), User_controllers_1.UserControllers.getAdminProfille);
+router.get("/", (0, authGurd_1.default)(client_1.UserRole.ADMIN), User_controllers_1.UserControllers.getAllUsers);
 // Get user profile BY id
 router.get("/:id", (0, authGurd_1.default)(client_1.UserRole.ADMIN), User_controllers_1.UserControllers.getUserById);
 exports.UserRoutes = router;

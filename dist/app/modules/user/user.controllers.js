@@ -54,9 +54,29 @@ const getUserProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void 0,
         data: result,
     });
 }));
+const getAdminProfille = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield User_services_1.UserServices.getAdminProfile(req.user.email);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Admin fetched Successfully.",
+        data: result,
+    });
+}));
+const getAllUsers = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield User_services_1.UserServices.getAllUsersFromDB(req.params.id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Users fetched Successfully.",
+        data: result,
+    });
+}));
 exports.UserControllers = {
     registerUser,
-    updateUser, //
+    updateUser,
     getUserById,
     getUserProfile,
+    getAdminProfille,
+    getAllUsers
 };

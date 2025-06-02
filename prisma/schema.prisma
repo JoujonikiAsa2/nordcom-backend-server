@@ -119,6 +119,7 @@ model Product {
   seoInformation Json[]
   variants       String[]
   isDeleted      Boolean
+  quantitySold   Int         @default(0)
   brand          Brand       @relation(fields: [brandId], references: [id])
   category       Category    @relation(fields: [categoryId], references: [id])
   createdAt      DateTime    @default(now())
