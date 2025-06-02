@@ -133,17 +133,64 @@ const createOrderInDB = async (email: string) => {
   return result;
 };
 
+// const getAllOrdersFromDB = async () => {
+//   const result = await prisma.order.findMany();
+//   if (!result || result.length === 0) {
+//     throw new ApiError(httpStatus.NOT_FOUND, "No orders found.");
+//   }
+//   const orderWithAvailableStatus = result.map((order) => {
+//     return {
+//       ...order,
+//       availableStatus: getAvailableStatus(order.status),
+//     };
+//   });
+//   return orderWithAvailableStatus;
+// };
+
 const getAllOrdersFromDB = async () => {
-  const result = await prisma.order.findMany();
+  const result = await prisma.order.findMany({
+    select: {
+      id: true,
+      user: {
+        select: {
+          name: true,
+          email: true,
+        },
+      },
+      userId: true,
+      totalAmount: true,
+      totalProduct: true,
+      status: true,
+      createdAt: true,
+      shippingId: true,
+      shippingFee: true,
+      updatedAt: true,
+      paymentStatus: true,
+    },
+  });
   if (!result || result.length === 0) {
     throw new ApiError(httpStatus.NOT_FOUND, "No orders found.");
   }
-  const orderWithAvailableStatus = result.map((order) => {
+  const modifiedOrders = result.map((order) => ({
+    id: order.id,
+    userId: order.userId,
+    userName: order.user.name,
+    userEmail: order.user.email,
+    totalAmount: order.totalAmount,
+    totalProduct: order.totalProduct,
+    status: order.status,
+    paymentStatus: order.paymentStatus,
+    shippingFee: order.shippingFee,
+    createdAt: order.createdAt,
+    updatedAt: order.updatedAt,
+  }));
+  const orderWithAvailableStatus = modifiedOrders.map((order) => {
     return {
       ...order,
       availableStatus: getAvailableStatus(order.status),
     };
   });
+  console.log("orderWithAvailableStatus", orderWithAvailableStatus);
   return orderWithAvailableStatus;
 };
 

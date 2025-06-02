@@ -12,6 +12,13 @@ router.get(
   AdminMangementControllers.GetAllUsers
 );
 
+// Fetch analytics data
+router.get(
+  "/analytics",
+  AuthGurd(UserRole.ADMIN),
+  AdminMangementControllers.GetAnalytics
+);
+
 //update status of user
 router.patch(
   "/:id",

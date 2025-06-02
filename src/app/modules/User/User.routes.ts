@@ -32,6 +32,14 @@ router.get(
   UserControllers.getUserProfile
 );
 
+router.get(
+  "/admin",
+  AuthGurd(UserRole.ADMIN),
+  UserControllers.getAdminProfille
+);
+
+
+router.get("/", AuthGurd(UserRole.ADMIN), UserControllers.getAllUsers);
 
 // Get user profile BY id
 router.get(

@@ -4,7 +4,9 @@ import sendResponse from "../../shared/sendResponse";
 import { ProductServices } from "./product.service";
 
 const GetProducts = catchAsync(async (req, res) => {
-  const result = await ProductServices.GetProductsFromDB();
+  const result = await ProductServices.GetProductsFromDB(
+    req.query.admin ? (req.query.admin as string) : ""
+  );
   sendResponse(res, {
     statusCode: status.OK,
     success: true,

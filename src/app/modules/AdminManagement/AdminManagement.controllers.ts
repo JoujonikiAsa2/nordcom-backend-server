@@ -29,7 +29,19 @@ const GetAllUsers = catchAsync(async (req, res) => {
   });
 });
 
+const GetAnalytics = catchAsync(async (req, res) => {
+  const result = await AdminManagementServices.GetAnalyticsFromDB();
+
+  sendResponse(res, {
+    statusCode: status.OK,
+    success: true,
+    message: "Users Fetched successfully.",
+    data: result,
+  });
+});
+
 export const AdminMangementControllers = {
   GetAllUsers,
   ChangeUserStatus,
+  GetAnalytics,
 };

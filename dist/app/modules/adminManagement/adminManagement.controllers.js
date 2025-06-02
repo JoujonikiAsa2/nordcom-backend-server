@@ -35,7 +35,17 @@ const GetAllUsers = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
         data: result,
     });
 }));
+const GetAnalytics = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield adminManagement_services_1.AdminManagementServices.GetAnalyticsFromDB();
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Users Fetched successfully.",
+        data: result,
+    });
+}));
 exports.AdminMangementControllers = {
     GetAllUsers,
     ChangeUserStatus,
+    GetAnalytics,
 };

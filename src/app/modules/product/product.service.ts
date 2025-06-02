@@ -3,22 +3,59 @@ import ApiError from "../../errors/ApiError";
 import status from "http-status";
 import { Prisma, Product } from "@prisma/client";
 
-const GetProductsFromDB = async () => {
-  const product = await prisma.product.findMany({
-    where: {
-      isDeleted: false,
-    },
-    include: {
-      brand: true,
-      category: true,
-      Review: true,
-      
-    },
-  });
-  if (product.length === 0) {
-    throw new ApiError(status.NOT_FOUND, "No Product Found");
+const GetProductsFromDB = async (viewAllType: string) => {
+  let select;
+  let Product;
+  if (viewAllType === "admin") {
+    select = {
+      brand: {
+        select: {
+          name: true,
+        },
+      },
+      brandId: true,
+      categoryId: true,
+      category: {
+        select: {
+          name: true,
+        },
+      },
+      createdAt: true,
+      id: true,
+      images: true,
+      name: true,
+      price: true,
+      stock: true,
+      sku: true,
+      stockStatus: true,
+      isFeatured: true,
+      discountPrice: true,
+    };
+    Product = await prisma.product.findMany({
+      where: {
+        isDeleted: false,
+      },
+      select,
+    });
+
+    Product = Product?.map((product) => ({
+      ...product,
+      brand: product.brand,
+      category: product.category,
+    }));
+  } else {
+    Product = await prisma.product.findMany({
+      where: {
+        isDeleted: false,
+      },
+      include: {
+        brand: true,
+        category: true,
+        Review: true,
+      },
+    });
   }
-  return product;
+  return Product;
 };
 
 const GetProductByIdFromDB = async (id: string) => {
@@ -61,8 +98,8 @@ const CreateProductIntoDB = async (
   return result;
 };
 
-const UpdateProductIntoDB = async (id: string, payload: Partial<Product>) => {
-  const { specification, images, seoInformation, variants, ...rest } = payload;
+const UpdateProductIntoDB = async (id: string, payload: Partial<Product & {imageUrl:string}>) => {
+  const { specification, imageUrl, seoInformation, variants, ...rest } = payload;
 
   //cheking existing
   const isProductExists = await prisma.product.findUnique({
@@ -74,21 +111,8 @@ const UpdateProductIntoDB = async (id: string, payload: Partial<Product>) => {
     throw new ApiError(status.NOT_FOUND, "No Product Available");
   }
 
-  //checking other field exist or not
-  if (
-    specification === null ||
-    images === null ||
-    seoInformation === null ||
-    variants === null
-  ) {
-    await prisma.product.update({
-      where: { id: isProductExists.id },
-      data: rest,
-    });
-  }
-
-  if (images !== undefined) {
-    const imageArray = [...images, ...isProductExists.images];
+  if (imageUrl !== undefined) {
+    const imageArray = [...isProductExists.images, imageUrl];
 
     await prisma.product.update({
       where: { id: isProductExists.id },
@@ -172,6 +196,11 @@ const UpdateProductIntoDB = async (id: string, payload: Partial<Product>) => {
       data: { seoInformation: mergedSeoInformation },
     });
   }
+
+  await prisma.product.update({
+    where: { id: isProductExists.id },
+    data: rest,
+  });
 
   const result = await prisma.product.findUnique({
     where: {

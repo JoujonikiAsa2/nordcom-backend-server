@@ -41,7 +41,13 @@ const GetBrandByIdFromDB = (id) => __awaiter(void 0, void 0, void 0, function* (
     return uniqueBrand;
 });
 const CreateBrandIntoDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name } = payload;
+    const { name, imageUrl } = payload;
+    const modifiedPayload = {
+        name,
+        logoUrl: imageUrl,
+        description: payload.description,
+        isFeatured: payload.isFeatured,
+    };
     const isBrandExists = yield prisma_1.default.brand.findFirst({
         where: {
             name: name,
@@ -51,22 +57,29 @@ const CreateBrandIntoDB = (payload) => __awaiter(void 0, void 0, void 0, functio
         throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Brand already exists!");
     }
     const result = yield prisma_1.default.brand.create({
-        data: payload,
+        data: modifiedPayload,
     });
     return result;
 });
 const UpdateBrandIntoDB = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const { name, imageUrl } = payload;
+    const modifiedPayload = {
+        name,
+        logoUrl: imageUrl,
+        description: payload.description,
+        isFeatured: payload.isFeatured,
+    };
     const isBrandExists = yield prisma_1.default.brand.findUnique({
         where: {
             id,
         },
     });
-    if (isBrandExists === null) {
-        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "No Brand Found");
+    if (isBrandExists == null) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Brand does not exists!");
     }
     const result = yield prisma_1.default.brand.update({
         where: { id },
-        data: payload,
+        data: imageUrl ? Object.assign(Object.assign({}, modifiedPayload), { logoUrl: imageUrl }) : payload,
     });
     return result;
 });

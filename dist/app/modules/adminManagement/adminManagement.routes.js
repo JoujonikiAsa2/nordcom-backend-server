@@ -11,6 +11,8 @@ const adminManagement_controllers_1 = require("./adminManagement.controllers");
 const router = express_1.default.Router();
 // Get all users
 router.get("/users", (0, authGurd_1.default)(client_1.UserRole.ADMIN), adminManagement_controllers_1.AdminMangementControllers.GetAllUsers);
+// Fetch analytics data
+router.get("/analytics", (0, authGurd_1.default)(client_1.UserRole.ADMIN), adminManagement_controllers_1.AdminMangementControllers.GetAnalytics);
 //update status of user
 router.patch("/:id", (0, authGurd_1.default)(client_1.UserRole.ADMIN), adminManagement_controllers_1.AdminMangementControllers.ChangeUserStatus);
 exports.AdminMangementRoutes = router;

@@ -29,8 +29,14 @@ const GetBrandByIdFromDB = async (id: string) => {
   return uniqueBrand;
 };
 
-const CreateBrandIntoDB = async (payload: Brand) => {
-  const { name } = payload;
+const CreateBrandIntoDB = async (payload: Brand & {imageUrl:string}) => {
+  const { name, imageUrl } = payload;
+  const modifiedPayload = {
+    name,
+    logoUrl: imageUrl,
+    description: payload.description,
+    isFeatured: payload.isFeatured,
+  };
   const isBrandExists = await prisma.brand.findFirst({
     where: {
       name: name,
@@ -40,25 +46,35 @@ const CreateBrandIntoDB = async (payload: Brand) => {
     throw new ApiError(status.BAD_REQUEST, "Brand already exists!");
   }
   const result = await prisma.brand.create({
-    data: payload,
+    data: modifiedPayload,
   });
   return result;
 };
-const UpdateBrandIntoDB = async (id: string, payload: Partial<Brand>) => {
+
+
+const UpdateBrandIntoDB = async (id: string, payload: Partial<Brand & {imageUrl:string}>) => {
+  const { name, imageUrl } = payload;
+  const modifiedPayload = {
+    name,
+    logoUrl: imageUrl,
+    description: payload.description,
+    isFeatured: payload.isFeatured,
+  };
   const isBrandExists = await prisma.brand.findUnique({
     where: {
       id,
     },
   });
-  if (isBrandExists === null) {
-    throw new ApiError(status.NOT_FOUND, "No Brand Found");
+  if (isBrandExists == null) {
+    throw new ApiError(status.BAD_REQUEST, "Brand does not exists!");
   }
   const result = await prisma.brand.update({
     where: { id },
-    data: payload,
+    data: imageUrl ? { ...modifiedPayload, logoUrl: imageUrl } : payload,
   });
   return result;
 };
+
 const DeleteBrandFromDB = async (id: string) => {
   const isBrandExists = await prisma.brand.findUnique({
     where: {
